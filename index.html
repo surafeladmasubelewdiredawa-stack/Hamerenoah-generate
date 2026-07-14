@@ -362,8 +362,12 @@
       </div>
       <div class="form-step" id="step2">
         <div class="form-group">
-          <label for="fullName">Full Name</label>
-          <input type="text" id="fullName" required placeholder="ሙሉ ስም">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" required placeholder="First Name">
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" required placeholder="Last Name">
         </div>
         <div class="form-group">
           <label for="phone">Phone Number</label>
@@ -567,15 +571,25 @@
       return true;
     }
     function validateStep2() {
-      const fullName = document.getElementById("fullName").value.trim();
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName = document.getElementById("lastName").value.trim();
       const phone = document.getElementById("phone").value.trim();
       const gender = document.querySelector('input[name="gender"]:checked');
-      if (!fullName) {
-        showStatus("እባክዎ ሙሉ ስሞን ያስገቡ", true);
+      
+      if (!firstName) {
+        showStatus("እባክዎ ስምዎን ያስገቡ (Please enter your First Name)", true);
         return false;
       }
-      if (!/^[A-Za-z\s]+$/.test(fullName)) {
-        showStatus("እባክዎ የኢንግሊዝኛ ቃላትን ይጠቀሙ", true);
+      if (!/^[A-Za-z\s]+$/.test(firstName)) {
+        showStatus("እባክዎ የኢንግሊዝኛ ቃላትን ይጠቀሙ (Use English letters for First Name)", true);
+        return false;
+      }
+      if (!lastName) {
+        showStatus("እባክዎ የአያት ስምዎን ያስገቡ (Please enter your Last Name)", true);
+        return false;
+      }
+      if (!/^[A-Za-z\s]+$/.test(lastName)) {
+        showStatus("እባክዎ የኢንግሊዝኛ ቃላትን ይጠቀሙ (Use English letters for Last Name)", true);
         return false;
       }
       if (!phone) {
@@ -596,9 +610,11 @@
       if (isLoading) return;
       const Church = document.getElementById("Church").value;
       const cName = document.getElementById("christianName").value;
-      const fName = document.getElementById("fullName").value;
+      const fName = document.getElementById("firstName").value;
+      const lName = document.getElementById("lastName").value;
       const phone = document.getElementById("phone").value;
       const gender = document.querySelector('input[name="gender"]:checked').value;
+      
       if (!extractedLogo || !extractedBackground) {
         document.getElementById('step3Loading').style.display = 'flex';
         setTimeout(() => {
@@ -617,7 +633,7 @@
       setTimeout(() => {
         const reader = new FileReader();
         reader.onload = function(e) {
-          const qrData = `Church: ${Church}\nChristian Name: ${cName}\nFull Name: ${fName}\nPhone: ${phone}\nGender: ${gender}`;
+          const qrData = `Church: ${Church}\nChristian Name: ${cName}\nFirst Name: ${fName}\nLast Name: ${lName}\nPhone: ${phone}\nGender: ${gender}`;
           downloadQR.update({
             data: qrData,
             image: e.target.result
@@ -674,7 +690,11 @@
         ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
         ctx.drawImage(qrOverlay, QR_LEFT, QR_TOP, DOWNLOAD_QR_WIDTH, DOWNLOAD_QR_HEIGHT);
         const dataURL = canvas.toDataURL('image/png');
-        const fName = document.getElementById('fullName').value.trim().replace(/\s+/g, '_');
+        
+        // Use both first name and last name for the downloaded file
+        const fName = document.getElementById('firstName').value.trim().replace(/\s+/g, '_');
+        const lName = document.getElementById('lastName').value.trim().replace(/\s+/g, '_');
+        
         if (isIOS()) {
           const newTab = window.open();
           newTab.document.write(`<img src="${dataURL}" alt="QR Code" style="max-width: 100%;"/>`);
@@ -684,7 +704,7 @@
           document.getElementById('statusMessage').style.display = 'block';
         } else {
           const link = document.createElement('a');
-          link.download = `${fName}_QR.png`;
+          link.download = `${fName}_${lName}_QR.png`;
           link.href = dataURL;
           document.body.appendChild(link);
           link.click();
