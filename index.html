@@ -106,21 +106,17 @@
       background: #cccccc;
       cursor: not-allowed;
     }
-    .qr-preview-wrapper {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      margin: 20px auto;
-    }
     #qr-with-background {
+      display: none;
+      margin: 20px auto;
       text-align: center;
       position: relative;
       width: 300px;
-      height: 300px;
+      height: 360px; /* Increased height to fit the name display */
     }
     #qr-background-image {
       width: 100%;
-      height: 100%;
+      height: 300px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       object-fit: contain;
@@ -139,17 +135,19 @@
       height: 100% !important;
       object-fit: contain;
     }
-    .preview-name-tag {
-      margin-top: 15px;
-      padding: 8px 24px;
+    #display-name-box {
+      width: 100%;
+      height: 50px;
+      margin-top: 10px;
       background-color: #ffffff;
       color: #000000;
       font-weight: bold;
       font-size: 18px;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      max-width: 100%;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .download-btn {
       display: none;
@@ -221,10 +219,15 @@
       animation: bounce 0.5s infinite alternate;
       background: #f5f5f5;
     }
+    .dots div:nth-child(1) {
+      background: #f5f5f5;
+    }
     .dots div:nth-child(2) {
+      background: #f5f5f5;
       animation-delay: 0.2s;
     }
     .dots div:nth-child(3) {
+      background: #f5f5f5;
       animation-delay: 0.4s;
     }
     .button-loading {
@@ -428,15 +431,11 @@
             <span style="margin-left:8px;"></span>
           </div>
         </div>
-        
-        <div class="qr-preview-wrapper" id="qrPreviewWrapper">
-          <div id="qr-with-background">
-            <img id="qr-background-image" src="" alt="QR Code with Background">
-            <div id="qr-overlay"></div>
-          </div>
-          <div id="previewNameTag" class="preview-name-tag">First Last</div>
+        <div id="qr-with-background">
+          <img id="qr-background-image" src="" alt="QR Code with Background">
+          <div id="qr-overlay"></div>
+          <div id="display-name-box"></div> <!-- Added display element here -->
         </div>
-        
         <div class="download-btn" id="downloadArea">
           <button id="downloadBgBtn">Download QR Code</button>
         </div>
@@ -643,7 +642,7 @@
       generateBtn.disabled = true;
       generateBtn.textContent = 'Generating...';
       document.getElementById('step3Loading').style.display = 'flex';
-      document.getElementById("qrPreviewWrapper").style.display = "none";
+      document.getElementById("qr-with-background").style.display = "none";
       document.getElementById("downloadArea").style.display = "none";
       setTimeout(() => {
         const reader = new FileReader();
@@ -653,7 +652,7 @@
             data: qrData,
             image: e.target.result
           });
-          renderQR();
+          renderQR(fName, lName); // Pass names to renderQR
           resetGenerateButton();
           document.getElementById('step3Loading').style.display = 'none';
         };
@@ -670,17 +669,16 @@
       generateBtn.disabled = false;
       generateBtn.textContent = 'Generate QR';
     }
-    function renderQR() {
+    // Updated to accept first and last name to display in the box
+    function renderQR(fName, lName) {
       const qrOverlay = document.getElementById("qr-overlay");
       qrOverlay.innerHTML = "";
       downloadQR.append(qrOverlay);
       
-      // Update and display name tag in preview
-      const firstName = document.getElementById('firstName').value.trim();
-      const lastName = document.getElementById('lastName').value.trim();
-      document.getElementById('previewNameTag').textContent = `${firstName} ${lastName}`;
+      // Update display text box with the user's full name
+      document.getElementById('display-name-box').textContent = `${fName} ${lName}`;
       
-      document.getElementById("qrPreviewWrapper").style.display = "flex";
+      document.getElementById("qr-with-background").style.display = "block";
       document.getElementById("downloadArea").style.display = "flex";
     }
     function isIOS() {
@@ -707,44 +705,46 @@
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = bgImg.naturalWidth || bgImg.width;
-        canvas.height = bgImg.naturalHeight || bgImg.height;
+        canvas.height = (bgImg.naturalHeight || bgImg.height) + 140; // Add extra height for the text background
         
-        // 1. Draw background image
-        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+        // Fill the entire new canvas area white first to support the background image if it has transparency
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // 2. Draw QR Code overlay
+        // Draw background image
+        ctx.drawImage(bgImg, 0, 0, bgImg.naturalWidth || bgImg.width, bgImg.naturalHeight || bgImg.height);
+        
+        // Draw QR Code overlay
         ctx.drawImage(qrOverlay, QR_LEFT, QR_TOP, DOWNLOAD_QR_WIDTH, DOWNLOAD_QR_HEIGHT);
         
-        // 3. Draw Name Text
+        // Add First Name and Last Name text to the image
         const firstName = document.getElementById('firstName').value.trim();
         const lastName = document.getElementById('lastName').value.trim();
         const fullName = `${firstName} ${lastName}`;
         
+        // Draw a White background box specifically for the text at the bottom
+        const boxHeight = 140;
+        const boxY = canvas.height - boxHeight;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, boxY, canvas.width, boxHeight);
+        
+        // Configure text style based on canvas size
         const fontSize = Math.floor(canvas.width / 25); 
         ctx.font = `bold ${fontSize}px Segoe UI, Arial, sans-serif`;
+        ctx.fillStyle = '#000000'; // Black text
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
-        // Measure text to create white background behind it
-        const textWidth = ctx.measureText(fullName).width;
-        const padding = fontSize * 0.6; 
-        const rectWidth = textWidth + padding * 2;
-        const rectHeight = fontSize * 1.6;
+        // Calculate position (centered horizontally, inside the new white box)
+        const textX = canvas.width / 2;
+        const textY = boxY + (boxHeight / 2);
         
-        // Centered horizontally, and placed at the very bottom of the image
-        const rectX = (canvas.width - rectWidth) / 2;
-        const rectY = canvas.height - rectHeight - 40; // 40px margin from bottom
-        
-        // Draw White Background Rectangle
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
-        
-        // Draw Black Text over the white background
-        ctx.fillStyle = "#000000";
-        ctx.fillText(fullName, canvas.width / 2, rectY + rectHeight / 2);
+        // Draw the text
+        ctx.fillText(fullName, textX, textY);
 
         const dataURL = canvas.toDataURL('image/png');
         
+        // Format file name
         const fNameClean = firstName.replace(/\s+/g, '_');
         const lNameClean = lastName.replace(/\s+/g, '_');
         
