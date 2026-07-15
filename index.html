@@ -363,24 +363,34 @@
         left: 150,                // Position from left (center is 150)
         paddingX: 10,             // White box width padding (Left/Right size)
         paddingY: 6,              // White box height padding (Top/Bottom size)
-        borderRadius: 15          // Corner radius
+        borderRadius: 10,         // Corner radius
+        borderWidth: 3            // Border thickness for screen
       },
       
       // 2. DOWNLOAD IMAGE SETTINGS (1400px width output image)
       DOWNLOAD: {
-        fontSize: 45,             // Font size in downloaded image
+        fontSize: 75,             // Font size in downloaded image
         top: 1200,                // Position from top
         left: 1245,               // Position from left (center is ~1245)
         paddingX: 40,             // White box width padding (Left/Right size)
-        paddingY: 15,             // White box height padding (Top/Bottom size)
-        borderRadius: 15          // Corner radius
+        paddingY: 25,             // White box height padding (Top/Bottom size)
+        borderRadius: 45,         // Corner radius
+        borderWidth: 12           // Border thickness for downloaded image
       },
       
       // 3. GENERAL STYLE (Applies to both Display and Download)
-      fontColor: "#000000",       // Text Color
+      fontColor: "#5c2e00",       // Text Color (Changed to Brown so it's visible) - You can change to "#000000" for black
       bgColor: "#FFFFFF",         // White Background Color
       fontWeight: "bold",
-      fontFamily: "Arial, sans-serif"
+      fontFamily: "Arial, sans-serif",
+      
+      // 4. BORDER COLORS
+      borderColors: {
+        top: "#00FF00",           // Green (Up)
+        bottom: "#FF0000",        // Red (Below)
+        left: "#00FF00",          // Green (Left side)
+        right: "#000000"          // Black (Right side)
+      }
     };
     // ======================================================================
 
@@ -391,6 +401,7 @@
     let extractedLogo = null;
     let extractedBackground = null;
     const CBZ_ZIP_URL = "CBZ.zip";
+    
     const DOWNLOAD_QR_WIDTH = 1400;
     const DOWNLOAD_QR_HEIGHT = 1400;
     const QR_LEFT = 545;
@@ -412,6 +423,8 @@
     (function applyNameConfigToCSS() {
       const style = document.createElement('style');
       const d = NAME_CONFIG.DISPLAY;
+      const c = NAME_CONFIG.borderColors;
+      // Using !important to override any dark theme text colors completely
       style.innerHTML = `
         #name-overlay {
           position: absolute;
@@ -429,6 +442,10 @@
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
           display: none;
           z-index: 10;
+          border-top: ${d.borderWidth}px solid ${c.top} !important;
+          border-bottom: ${d.borderWidth}px solid ${c.bottom} !important;
+          border-left: ${d.borderWidth}px solid ${c.left} !important;
+          border-right: ${d.borderWidth}px solid ${c.right} !important;
         }
       `;
       document.head.appendChild(style);
@@ -634,24 +651,56 @@
         if (fullName) {
           // Use the specific Download settings
           const d = NAME_CONFIG.DOWNLOAD;
+          const c = NAME_CONFIG.borderColors;
+          const bw = d.borderWidth;
           
           ctx.font = `${NAME_CONFIG.fontWeight} ${d.fontSize}px ${NAME_CONFIG.fontFamily}`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           
           const textWidth = ctx.measureText(fullName).width;
-          const boxWidth = textWidth + d.paddingX * 2;
-          const boxHeight = d.fontSize + d.paddingY * 2;
+          const boxWidth = textWidth + d.paddingX * 2 + (bw * 2); // Include border in size
+          const boxHeight = d.fontSize + d.paddingY * 2 + (bw * 2);
           
           const boxX = d.left - boxWidth / 2;
           const boxY = d.top - boxHeight / 2;
+
+          // 1. Draw Outer Color Borders (As a full rectangle)
+          drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, d.borderRadius + bw);
           
-          // Draw White Background Box
-          drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, d.borderRadius);
+          // Clip to round the corners of the background fill
+          ctx.save();
+          ctx.clip();
+          
+          // Draw Top Half (Green)
+          ctx.fillStyle = c.top;
+          ctx.fillRect(boxX, boxY, boxWidth, boxHeight / 2);
+          
+          // Draw Bottom Half (Red)
+          ctx.fillStyle = c.bottom;
+          ctx.fillRect(boxX, boxY + boxHeight / 2, boxWidth, boxHeight / 2);
+          
+          // Draw Left Half (Green) - Overwrites top/bottom on the left
+          ctx.fillStyle = c.left;
+          ctx.fillRect(boxX, boxY, boxWidth / 2, boxHeight);
+          
+          // Draw Right Half (Black) - Overwrites top/bottom on the right
+          ctx.fillStyle = c.right;
+          ctx.fillRect(boxX + boxWidth / 2, boxY, boxWidth / 2, boxHeight);
+          
+          ctx.restore();
+
+          // 2. Draw Inner White Background Box
+          const innerX = boxX + bw;
+          const innerY = boxY + bw;
+          const innerW = boxWidth - bw * 2;
+          const innerH = boxHeight - bw * 2;
+          
+          drawRoundedRect(ctx, innerX, innerY, innerW, innerH, d.borderRadius);
           ctx.fillStyle = NAME_CONFIG.bgColor;
           ctx.fill();
           
-          // Draw Text
+          // 3. Draw Text
           ctx.fillStyle = NAME_CONFIG.fontColor;
           ctx.fillText(fullName, d.left, d.top);
         }
