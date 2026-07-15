@@ -72,18 +72,6 @@
     .doc-btn:active{transform:translateY(-1px) scale(.98)}
     .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.2);transform:scale(0);animation:rippleAnim .6s ease-out forwards;pointer-events:none}
     @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
-    .sub-choice{display:none;flex-direction:column;gap:12px;animation:fadeSlideUp .35s ease-out both;grid-column:1/-1}
-    .sub-choice.visible{display:flex}
-    .sub-choice-row{display:flex;gap:12px}
-    .sub-btn{display:flex;align-items:center;gap:10px;padding:14px 20px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--fg);font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .3s ease;flex:1}
-    .sub-btn:hover{transform:translateY(-2px)}
-    .sub-btn .sub-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;min-width:36px;border-radius:8px;font-size:.95rem}
-    .sub-btn.choose-file .sub-icon{background:linear-gradient(135deg,var(--gold),#b8882e);color:#fff}
-    .sub-btn.choose-file:hover{border-color:var(--gold);box-shadow:0 0 20px var(--gold-glow)}
-    .sub-btn.camera-shot .sub-icon{background:linear-gradient(135deg,var(--accent),#c23a25);color:#fff}
-    .sub-btn.camera-shot:hover{border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow)}
-    .back-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:.75rem;cursor:pointer;transition:all .25s;align-self:flex-start}
-    .back-btn:hover{color:var(--fg);border-color:rgba(255,255,255,.15)}
     .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:105}
     .overlay.active{display:flex}
     .overlay-bg{position:absolute;inset:0;background:rgba(0,0,0,.8);animation:overlayIntro .35s ease-out both}
@@ -305,7 +293,7 @@
     .radio-pill input[type="radio"]:checked + label { background: linear-gradient(135deg,var(--gold),#b8882e); border-color: var(--gold); font-weight: 600; color: #fff; }
     .qr-error { font-size:.72rem;color:var(--accent);min-height:16px; text-align: center; margin-top: 4px; }
 
-    @media(max-width:580px){.btn-grid{grid-template-columns:1fr;max-width:300px}.doc-btn{padding:14px 20px}.sub-choice-row,.addimg-row{flex-direction:column}.save-box,.table-box,.detail-box,.popup-box,.addimg-box{padding:20px}.select-bar{gap:6px}.sel-btn{padding:6px 10px;font-size:.7rem}.img-actions{flex-direction:row;gap:8px;justify-content:center}.delete-btn,.download-btn{padding:8px 14px;font-size:.76rem}.birthday-row{flex-direction:column;gap:6px}.id-card{padding:10px 12px;gap:10px}.id-card-photo{width:50px;height:64px;font-size:1.1rem}}
+    @media(max-width:580px){.btn-grid{grid-template-columns:1fr;max-width:300px}.doc-btn{padding:14px 20px}.addimg-row{flex-direction:column}.save-box,.table-box,.detail-box,.popup-box,.addimg-box{padding:20px}.select-bar{gap:6px}.sel-btn{padding:6px 10px;font-size:.7rem}.img-actions{flex-direction:row;gap:8px;justify-content:center}.delete-btn,.download-btn{padding:8px 14px;font-size:.76rem}.birthday-row{flex-direction:column;gap:6px}.id-card{padding:10px 12px;gap:10px}.id-card-photo{width:50px;height:64px;font-size:1.1rem}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   </style>
 </head>
@@ -350,18 +338,16 @@
     </div>
   </main>
   
-  <input type="file" id="fileInput" accept="image/*" style="display:none">
   <input type="file" id="addImgFileInput" accept="image/*" style="display:none">
   <input type="file" id="personalPhotoInput" accept="image/*" style="display:none">
   <div class="camera-overlay" id="cameraOverlay"><video id="cameraVideo" autoplay playsinline></video><div class="camera-controls"><button class="cam-btn close-cam" id="closeCamBtn"><i class="fa-solid fa-xmark"></i></button><button class="cam-btn capture" id="captureBtn"><i class="fa-solid fa-camera"></i></button></div></div>
 
-  <!-- Preview Overlay -->
+  <!-- Image Preview Overlay -->
   <div class="overlay preview-overlay" id="previewOverlay"><div class="overlay-bg"></div><div class="anim-box preview-content"><div class="preview-stage" id="previewStage"><img id="previewImg" src="" alt="Preview"></div><p class="preview-label" id="previewLabel">Drag to crop area (Edit Mode)</p><div class="preview-actions"><button class="preview-btn" id="previewCloseBtn"><i class="fa-solid fa-xmark"></i> Close</button><button class="preview-btn edit-btn" id="previewEditBtn"><i class="fa-solid fa-crop-simple"></i> Edit</button><button class="preview-btn next-btn" id="previewNextBtn"><i class="fa-solid fa-arrow-right"></i> Next</button></div></div></div>
   
-  <!-- Save Overlay -->
+  <!-- Save Document Form -->
   <div class="overlay save-overlay" id="saveOverlay"><div class="overlay-bg"></div><div class="anim-box save-box"><div class="save-box-title"><i class="fa-solid fa-floppy-disk"></i> Save Document</div>
   
-    <!-- QR Form -->
     <div id="qr-error" class="qr-error"></div>
     <div class="qr-group">
       <label>Church</label>
@@ -653,7 +639,6 @@
       uploadSub = document.getElementById('uploadSub'),
       uploadOfflineNote = document.getElementById('uploadOfflineNote'),
       toastEl = document.getElementById('toast'),
-      fileInput = document.getElementById('fileInput'),
       cameraOverlay = document.getElementById('cameraOverlay'),
       cameraVideo = document.getElementById('cameraVideo'),
       captureCanvas = document.getElementById('captureCanvas'),
@@ -820,23 +805,14 @@
     // Add Doc automatically opens Save Document
     document.getElementById('btnAdd2').addEventListener('click', function (e) {
       currentProcessedImage = null;
-      // Reset form fields
-      document.getElementById('christianName').value = '';
-      document.getElementById('firstName').value = '';
-      document.getElementById('lastName').value = '';
-      document.getElementById('phone').value = '';
-      var gRadio = document.querySelector('input[name="gender"]:checked');
-      if (gRadio) gRadio.checked = false;
-      
       document.getElementById('saveOverlay').classList.add('active');
-      
       if (!qrExtractedLogo && !qrExtractedBackground) {
         loadCBZZip();
       }
       addRipple(e, document.getElementById('btnAdd2'));
     });
 
-    /* ===== 14. File & Camera (Unused now for Add Doc, but kept for extras) ===== */
+    /* ===== 14. Camera ===== */
     document.getElementById('closeCamBtn').addEventListener('click', closeCam);
     document.getElementById('captureBtn').addEventListener('click', takePicture);
 
@@ -921,19 +897,13 @@
       clearPersonalPhoto();
     });
 
+    // Displays the local image preview
     function processImageFile(src) {
       var img = document.getElementById('previewImg');
       img.src = src; img.dataset.origSrc = src; img.style.clipPath = ''; img.style.transform = '';
       document.getElementById('previewOverlay').classList.add('active');
       document.getElementById('previewEditBtn').innerHTML = '<i class="fa-solid fa-crop-simple"></i> Edit';
       document.getElementById('previewLabel').textContent = 'Drag to crop area (Edit Mode)';
-      var nextHandler = function () {
-        currentProcessedImage = img.src;
-        document.getElementById('previewOverlay').classList.remove('active');
-        document.getElementById('saveOverlay').classList.add('active');
-        document.getElementById('previewNextBtn').removeEventListener('click', nextHandler);
-      };
-      document.getElementById('previewNextBtn').addEventListener('click', nextHandler);
     }
 
     document.getElementById('previewCloseBtn').addEventListener('click', function () {
@@ -1023,7 +993,6 @@
                 
                 // Show local image preview without uploading to Cloudinary
                 processImageFile(finalDataURL);
-
                 uploadOverlay.classList.remove('active');
               };
             } catch (err) {
@@ -1040,9 +1009,12 @@
       }
     });
 
-    // Save from Preview
+    // Save from Image Preview to Firebase
     document.getElementById('previewNextBtn').addEventListener('click', async function () {
-        if (!currentProcessedImage) return;
+        if (!currentProcessedImage) {
+            var img = document.getElementById('previewImg');
+            currentProcessedImage = img.src;
+        }
         
         document.getElementById('previewOverlay').classList.remove('active');
         uploadOverlay.classList.add('active');
@@ -1083,7 +1055,6 @@
             if (activeView === targetClass) renderTable(targetClass);
             updateBadges();
             
-            // Reset form
             targetClass = null;
             document.getElementById('birthDay').value = ''; document.getElementById('birthMonth').value = ''; document.getElementById('birthYear').value = '';
             document.getElementById('ageDisplay').innerHTML = ''; clearPersonalPhoto();
@@ -1223,7 +1194,6 @@
     qrHiddenDiv.style.display = 'none';
     document.body.appendChild(qrHiddenDiv);
     qrGeneratorInstance.append(qrHiddenDiv);
-
 
     /* ===== 16. Table View ===== */
     function openTable(view) {
