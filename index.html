@@ -6,7 +6,8 @@
   <title>የሐመረ-ኖኅ ሰንበት ት/ቤት የተማሪዎች ሰነድ መያዣ ድህረ ገፅ</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
   <style>
     :root{--bg:#0e0f14;--fg:#f0ece4;--muted:#6b6872;--accent:#e8553d;--accent-glow:rgba(232,85,61,0.35);--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.07);--teal:#2ec4a2;--teal-glow:rgba(46,196,162,0.3);--gold:#d4a03c;--gold-glow:rgba(212,160,60,0.3);--sky:#3daae8;--sky-glow:rgba(61,170,232,0.3);--purple:#9b59b6;--purple-glow:rgba(155,89,182,0.3);--rose:#e85577;--rose-glow:rgba(232,85,119,0.3)}
     *{margin:0;padding:0;box-sizing:border-box}
@@ -71,18 +72,6 @@
     .doc-btn:active{transform:translateY(-1px) scale(.98)}
     .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.2);transform:scale(0);animation:rippleAnim .6s ease-out forwards;pointer-events:none}
     @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
-    .sub-choice{display:none;flex-direction:column;gap:12px;animation:fadeSlideUp .35s ease-out both;grid-column:1/-1}
-    .sub-choice.visible{display:flex}
-    .sub-choice-row{display:flex;gap:12px}
-    .sub-btn{display:flex;align-items:center;gap:10px;padding:14px 20px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--fg);font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .3s ease;flex:1}
-    .sub-btn:hover{transform:translateY(-2px)}
-    .sub-btn .sub-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;min-width:36px;border-radius:8px;font-size:.95rem}
-    .sub-btn.choose-file .sub-icon{background:linear-gradient(135deg,var(--gold),#b8882e);color:#fff}
-    .sub-btn.choose-file:hover{border-color:var(--gold);box-shadow:0 0 20px var(--gold-glow)}
-    .sub-btn.camera-shot .sub-icon{background:linear-gradient(135deg,var(--accent),#c23a25);color:#fff}
-    .sub-btn.camera-shot:hover{border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow)}
-    .back-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:.75rem;cursor:pointer;transition:all .25s;align-self:flex-start}
-    .back-btn:hover{color:var(--fg);border-color:rgba(255,255,255,.15)}
     .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:105}
     .overlay.active{display:flex}
     .overlay-bg{position:absolute;inset:0;background:rgba(0,0,0,.8);animation:overlayIntro .35s ease-out both}
@@ -106,13 +95,11 @@
     @keyframes imgOutro{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.85)}}
     .preview-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;max-width:90vw}
     .preview-stage{position:relative;width:100%;display:flex;justify-content:center;min-height:200px}
-    .preview-content img{max-width:80vw;max-height:55vh;border-radius:12px;border:2px solid rgba(255,255,255,.1);box-shadow:0 20px 60px rgba(0,0,0,.5);animation:imgIntro .45s cubic-bezier(.22,1,.36,1) both;object-fit:contain;cursor:crosshair}
+    .preview-content img{max-width:80vw;max-height:55vh;border-radius:12px;border:2px solid rgba(255,255,255,.1);box-shadow:0 20px 60px rgba(0,0,0,.5);animation:imgIntro .45s cubic-bezier(.22,1,.36,1) both;object-fit:contain}
     .preview-label{margin-top:16px;color:var(--fg);font-family:'Space Grotesk',sans-serif;font-size:.9rem;opacity:.7}
     .preview-actions{display:flex;gap:12px;margin-top:14px}
     .preview-btn{padding:10px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:var(--fg);font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px}
     .preview-btn:hover{background:rgba(255,255,255,.15)}
-    .preview-btn.edit-btn{border-color:var(--sky);color:var(--sky)}.preview-btn.edit-btn:hover{background:rgba(61,170,232,.15);border-color:var(--sky);color:var(--sky)}
-    .preview-btn.next-btn{background:linear-gradient(135deg,var(--gold),#b8882e);border-color:var(--gold);color:#fff}.preview-btn.next-btn:hover{box-shadow:0 0 20px var(--gold-glow);transform:translateY(-2px)}
     .save-box{width:340px;max-width:90vw;background:rgba(22,22,30,.95);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:20px;max-height:90vh;overflow-y:auto}
     .save-box-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:10px}
     .save-box-title i{color:var(--gold)}
@@ -292,24 +279,20 @@
     .id-card-bday span{color:var(--fg);font-weight:500}
     .id-card-age{font-size:.73rem;color:var(--teal);font-weight:600;font-family:'Space Grotesk',sans-serif}
 
-    @media(max-width:580px){.btn-grid{grid-template-columns:1fr;max-width:300px}.doc-btn{padding:14px 20px}.sub-choice-row,.addimg-row{flex-direction:column}.save-box,.table-box,.detail-box,.popup-box,.addimg-box{padding:20px}.select-bar{gap:6px}.sel-btn{padding:6px 10px;font-size:.7rem}.img-actions{flex-direction:row;gap:8px;justify-content:center}.delete-btn,.download-btn{padding:8px 14px;font-size:.76rem}.birthday-row{flex-direction:column;gap:6px}.id-card{padding:10px 12px;gap:10px}.id-card-photo{width:50px;height:64px;font-size:1.1rem}}
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    /* ===== QR Generator Additions ===== */
+    .qr-group label { font-size:.75rem;font-weight:500;color:var(--muted);letter-spacing:.8px;text-transform:uppercase; margin-bottom:4px; display:block; }
+    .qr-group input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--fg); font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; outline: none; transition: border-color 0.25s, box-shadow 0.25s; box-sizing: border-box; margin-bottom: 10px; }
+    .qr-group input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+    .qr-group input::placeholder { color: var(--muted); opacity: 0.6; }
+    .radio-pill-container { display: flex; gap: 10px; margin-top: 4px; }
+    .radio-pill { flex: 1; text-align: center; }
+    .radio-pill input[type="radio"] { display: none; }
+    .radio-pill label { display: block; padding: 10px; background: rgba(255,255,255,0.06); color: var(--fg); border: 1px solid var(--border); border-radius: 50px; cursor: pointer; transition: all 0.3s; text-align: center; font-weight: 500; font-size: 0.85rem; font-family: 'Space Grotesk', sans-serif; }
+    .radio-pill input[type="radio"]:checked + label { background: linear-gradient(135deg,var(--gold),#b8882e); border-color: var(--gold); font-weight: 600; color: #fff; }
+    .qr-error { font-size:.72rem;color:var(--accent);min-height:16px; text-align: center; margin-top: 4px; }
 
-    /* ===== QR Generator additions ===== */
-    .qr-step-group{display:flex;flex-direction:column;gap:12px;padding:14px;border:1px dashed rgba(212,160,60,.28);border-radius:12px;background:rgba(212,160,60,.04)}
-    .qr-step-label{font-family:'Space Grotesk',sans-serif;font-size:.7rem;font-weight:700;color:var(--gold);letter-spacing:1.2px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-    .qr-step-label .step-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#b8882e);color:#1a1a24;font-size:.7rem;font-weight:800;flex-shrink:0}
-    .radio-pill-container{display:flex;gap:10px;margin-top:4px}
-    .radio-pill{flex:1;text-align:center}
-    .radio-pill input[type="radio"]{display:none}
-    .radio-pill label{display:block;padding:11px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--fg);border-radius:50px;cursor:pointer;transition:all .25s;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:.82rem;font-weight:500}
-    .radio-pill input[type="radio"]:checked + label{background:linear-gradient(135deg,var(--gold),#b8882e);border-color:var(--gold);color:#fff;font-weight:600;box-shadow:0 4px 14px var(--gold-glow)}
-    .radio-pill label:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.07)}
-    .doc-table thead th.col-qr{width:96px;text-align:center}
-    .doc-qr-cell{text-align:center;width:96px;vertical-align:middle}
-    .doc-qr-thumb{width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.3);cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
-    .doc-qr-thumb:hover{transform:scale(1.08);box-shadow:0 4px 14px var(--gold-glow);border-color:var(--gold)}
-    .doc-qr-placeholder{display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:8px;border:1px dashed var(--border);color:var(--muted);font-size:.9rem}
+    @media(max-width:580px){.btn-grid{grid-template-columns:1fr;max-width:300px}.doc-btn{padding:14px 20px}.save-box,.table-box,.detail-box,.popup-box,.addimg-box{padding:20px}.select-bar{gap:6px}.sel-btn{padding:6px 10px;font-size:.7rem}.img-actions{flex-direction:row;gap:8px;justify-content:center}.delete-btn,.download-btn{padding:8px 14px;font-size:.76rem}.birthday-row{flex-direction:column;gap:6px}.id-card{padding:10px 12px;gap:10px}.id-card-photo{width:50px;height:64px;font-size:1.1rem}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   </style>
 </head>
 <body>
@@ -350,7 +333,6 @@
       <button class="doc-btn btn-view3" id="btnView3"><div class="icon-wrap"><i class="fa-solid fa-folder-open"></i></div><div class="btn-text"><span class="label">የማእከላውያን</span></div></button>
       <button class="doc-btn btn-view4" id="btnView4"><div class="icon-wrap"><i class="fa-solid fa-folder-open"></i></div><div class="btn-text"><span class="label">የወጣቶች</span></div></button>
       <button class="doc-btn btn-add2" id="btnAdd2"><div class="icon-wrap"><i class="fa-solid fa-file-pen"></i></div><div class="btn-text"><span class="label">Add Doc</span></div></button>
-      <div class="sub-choice" id="subChoice"><button class="back-btn" id="backBtn"><i class="fa-solid fa-arrow-left"></i> Back</button><div class="sub-choice-row"><button class="sub-btn choose-file" id="chooseFileBtn"><div class="sub-icon"><i class="fa-solid fa-folder-open"></i></div>Choose File</button><button class="sub-btn camera-shot" id="cameraShotBtn"><div class="sub-icon"><i class="fa-solid fa-camera"></i></div>Camera Shot</button></div></div>
     </div>
   </main>
   
@@ -359,17 +341,61 @@
   <input type="file" id="personalPhotoInput" accept="image/*" style="display:none">
   <div class="camera-overlay" id="cameraOverlay"><video id="cameraVideo" autoplay playsinline></video><div class="camera-controls"><button class="cam-btn close-cam" id="closeCamBtn"><i class="fa-solid fa-xmark"></i></button><button class="cam-btn capture" id="captureBtn"><i class="fa-solid fa-camera"></i></button></div></div>
 
-  <div class="overlay preview-overlay" id="previewOverlay"><div class="overlay-bg"></div><div class="anim-box preview-content"><div class="preview-stage" id="previewStage"><img id="previewImg" src="" alt="Preview"></div><p class="preview-label" id="previewLabel">Drag to crop area (Edit Mode)</p><div class="preview-actions"><button class="preview-btn" id="previewCloseBtn"><i class="fa-solid fa-xmark"></i> Close</button><button class="preview-btn edit-btn" id="previewEditBtn"><i class="fa-solid fa-crop-simple"></i> Edit</button><button class="preview-btn next-btn" id="previewNextBtn"><i class="fa-solid fa-arrow-right"></i> Next</button></div></div></div>
+  <!-- Preview Overlay (Next & Edit buttons removed, only displays like an image) -->
+  <div class="overlay preview-overlay" id="previewOverlay"><div class="overlay-bg"></div><div class="anim-box preview-content"><div class="preview-stage" id="previewStage"><img id="previewImg" src="" alt="Preview"></div><p class="preview-label" id="previewLabel"></p><div class="preview-actions"><button class="preview-btn" id="previewCloseBtn"><i class="fa-solid fa-xmark"></i> Close</button></div></div></div>
   
-  <div class="overlay save-overlay" id="saveOverlay"><div class="overlay-bg"></div><div class="anim-box save-box"><div class="save-box-title"><i class="fa-solid fa-floppy-disk"></i> Save Document</div><div class="qr-step-group"><div class="qr-step-label"><span class="step-num">1</span> QR · Step 1</div><div class="input-group"><label for="churchInput">Church</label><input type="text" id="churchInput" value="Hamerenoh" readonly style="opacity:.7;cursor:not-allowed"></div><div class="input-group"><label for="christianNameInput">Christian Name</label><input type="text" id="christianNameInput" placeholder="ስመ-ክርስትና" autocomplete="off"></div></div><div class="qr-step-group"><div class="qr-step-label"><span class="step-num">2</span> QR · Step 2</div><div class="input-group"><label for="firstNameInput">First Name</label><input type="text" id="firstNameInput" placeholder="First Name" autocomplete="off"></div><div class="input-group"><label for="lastNameInput">Last Name</label><input type="text" id="lastNameInput" placeholder="Last Name" autocomplete="off"></div><div class="input-group"><label for="phoneInput">Phone Number</label><input type="tel" id="phoneInput" pattern="[0-9]{10,15}" inputmode="numeric" placeholder="ስልክ ቁጥር" autocomplete="off"></div><div class="input-group"><label style="text-align:center">ጾታ (Gender)</label><div class="radio-pill-container"><div class="radio-pill"><input type="radio" id="gender-male" name="gender" value="Male"><label for="gender-male">Male</label></div><div class="radio-pill"><input type="radio" id="gender-female" name="gender" value="Female"><label for="gender-female">Female</label></div></div></div></div><div class="birthday-group"><label><i class="fa-solid fa-cake-candles" style="margin-right:4px;color:var(--gold)"></i> Birthday</label><div class="birthday-row"><div class="b-input"><input type="number" id="birthDay" min="1" max="30" placeholder="Day (1-30)"></div><div class="b-input"><select id="birthMonth"><option value="">ወር (Month)</option><option value="1">1 - መስከረም</option><option value="2">2 - ጥቅምት</option><option value="3">3 - ኅዳር</option><option value="4">4 - ታኅሣሥ</option><option value="5">5 - ጥር</option><option value="6">6 - የካቲት</option><option value="7">7 - መጋቢት</option><option value="8">8 - ሚያዝያ</option><option value="9">9 - ግንቦት</option><option value="10">10 - ሰኔ</option><option value="11">11 - ሐምሌ</option><option value="12">12 - ነሐሴ</option><option value="13">13 - ጳጉሜን</option></select></div><div class="b-input"><input type="number" id="birthYear" min="1890" max="2020" placeholder="Year (E.C.)"></div></div><div class="age-display" id="ageDisplay"></div></div><div class="photo-section"><label><i class="fa-solid fa-id-card" style="margin-right:4px;color:var(--gold)"></i> Personal Photo</label><div class="photo-row"><button class="photo-opt-btn" id="personalFileBtn"><i class="fa-solid fa-folder-open" style="color:var(--gold)"></i> File</button><button class="photo-opt-btn" id="personalCamBtn"><i class="fa-solid fa-camera" style="color:var(--accent)"></i> Camera</button><div class="photo-thumb-wrap" id="personalPhotoWrap"><img id="personalPhotoPreview" alt="Photo"><button class="photo-remove-btn" id="personalPhotoRemoveBtn"><i class="fa-solid fa-xmark"></i></button></div></div></div><div class="class-group"><label>Choose Class</label><div class="class-options"><button class="class-btn c1" data-class="view1"><span class="class-dot"></span><i class="fa-solid fa-folder-open" style="color:var(--teal);font-size:.85rem"></i> የህፃናት</button><button class="class-btn c2" data-class="view2"><span class="class-dot"></span><i class="fa-solid fa-folder-open" style="color:var(--sky);font-size:.85rem"></i> የታዳጊ</button><button class="class-btn c3" data-class="view3"><span class="class-dot"></span><i class="fa-solid fa-folder-open" style="color:var(--purple);font-size:.85rem"></i> የማእከላውያን</button><button class="class-btn c4" data-class="view4"><span class="class-dot"></span><i class="fa-solid fa-folder-open" style="color:var(--rose);font-size:.85rem"></i> የወጣቶች</button></div></div><div class="save-action-row"><button class="cancel-mini-btn" id="saveCancelBtn" type="button"><i class="fa-solid fa-xmark"></i> Cancel</button><button class="finished-btn" id="finishedBtn" disabled><i class="fa-solid fa-check"></i> Finished</button></div></div></div>
+  <!-- Save Overlay -->
+  <div class="overlay save-overlay" id="saveOverlay"><div class="overlay-bg"></div><div class="anim-box save-box"><div class="save-box-title"><i class="fa-solid fa-floppy-disk"></i> Save Document</div>
+  
+    <!-- QR Form -->
+    <div id="qr-error" class="qr-error"></div>
+    <div class="qr-group">
+      <label>Church</label>
+      <input type="text" id="Church" value="Hamerenoh" readonly>
+    </div>
+    <div class="qr-group">
+      <label>Christian Name</label>
+      <input type="text" id="christianName" required placeholder="ስመ-ክርስትና">
+    </div>
+    <div class="qr-group">
+      <label>First Name</label>
+      <input type="text" id="firstName" required placeholder="First Name">
+    </div>
+    <div class="qr-group">
+      <label>Last Name</label>
+      <input type="text" id="lastName" required placeholder="Last Name">
+    </div>
+    <div class="qr-group">
+      <label>Phone Number</label>
+      <input type="tel" id="phone" pattern="[0-9]{10,15}" inputmode="numeric" required placeholder="ስልክ ቁጥር">
+    </div>
+    <div class="qr-group">
+      <label style="text-align: center;">ጾታ</label>
+      <div class="radio-pill-container">
+        <div class="radio-pill">
+          <input type="radio" id="gender-male" name="gender" value="Male" required>
+          <label for="gender-male">Male</label>
+        </div>
+        <div class="radio-pill">
+          <input type="radio" id="gender-female" name="gender" value="Female" required>
+          <label for="gender-female">Female</label>
+        </div>
+      </div>
+    </div>
 
-  <div class="overlay table-overlay" id="tableOverlay"><div class="overlay-bg"></div><div class="anim-box table-box"><div class="table-header"><div class="header-left"><div class="table-title" id="tableTitle"><span class="doc-count-icon" id="tableCountIcon">0</span><button class="search-icon-btn" id="searchIconBtn" title="Search names"><i class="fa-solid fa-magnifying-glass"></i></button><input type="text" class="search-input" id="searchInput" placeholder="Name or Age..."><button class="search-clear-btn" id="searchClearBtn" title="Clear search"><i class="fa-solid fa-xmark"></i></button></div><div class="select-bar" id="selectBar"><button class="sel-btn" id="selectAllBtn"><i class="fa-solid fa-check-double"></i> All</button><button class="sel-btn move-btn" id="moveBtn" disabled><i class="fa-solid fa-arrows-up-down-left-right"></i> Move</button><button class="sel-btn delete-sel-btn" id="deleteSelBtn" disabled><i class="fa-solid fa-trash-can"></i> Delete</button><button class="sel-btn exit-btn" id="exitSelectBtn"><i class="fa-solid fa-xmark"></i> Exit</button><span class="sel-count"><i class="fa-solid fa-circle-info"></i> <span id="selectCount">0</span></span></div></div><button class="table-close" id="tableCloseBtn"><i class="fa-solid fa-xmark"></i></button></div><div class="table-wrap"><table class="doc-table" id="docTable"><thead><tr><th class="col-check"></th><th>#</th><th>Name</th><th class="col-qr">Image Preview</th></tr></thead><tbody id="tableBody"></tbody></table></div></div></div>
+    <div class="birthday-group"><label><i class="fa-solid fa-cake-candles" style="margin-right:4px;color:var(--gold)"></i> Birthday</label><div class="birthday-row"><div class="b-input"><input type="number" id="birthDay" min="1" max="30" placeholder="Day (1-30)"></div><div class="b-input"><select id="birthMonth"><option value="">ወር (Month)</option><option value="1">1 - መስከረም</option><option value="2">2 - ጥቅምት</option><option value="3">3 - ኅዳር</option><option value="4">4 - ታኅሣሥ</option><option value="5">5 - ጥር</option><option value="6">6 - የካቲት</option><option value="7">7 - መጋቢት</option><option value="8">8 - ሚያዝያ</option><option value="9">9 - ግንቦት</option><option value="10">10 - ሰኔ</option><option value="11">11 - ሐምሌ</option><option value="12">12 - ነሐሴ</option><option value="13">13 - ጳጉሜን</option></select></div><div class="b-input"><input type="number" id="birthYear" min="1890" max="2020" placeholder="Year (E.C.)"></div></div><div class="age-display" id="ageDisplay"></div></div>
+    
+    <div class="photo-section"><label><i class="fa-solid fa-id-card" style="margin-right:4px;color:var(--gold)"></i> Personal Photo</label><div class="photo-row"><button class="photo-opt-btn" id="personalFileBtn"><i class="fa-solid fa-folder-open" style="color:var(--gold)"></i> File</button><button class="photo-opt-btn" id="personalCamBtn"><i class="fa-solid fa-camera" style="color:var(--accent)"></i> Camera</button><div class="photo-thumb-wrap" id="personalPhotoWrap"><img id="personalPhotoPreview" alt="Photo"><button class="photo-remove-btn" id="personalPhotoRemoveBtn"><i class="fa-solid fa-xmark"></i></button></div></div></div>
+    
+    <div class="class-group"><label>Choose Class</label><div class="class-options"><button class="class-btn c1" data-class="view1"><span class="class-dot"></span><i class="fa-solid fa-folder-open" style="color:var(--teal);font-size:.85rem"></i> የህፃናት</button><button class="class-btn c2" data-class="view2"><span class="class-dot"></span><i class="fa-solid fa-folder-open" style="color:var(--sky);font-size:.85rem"></i> የታዳጊ</button><button class="class-btn c3" data-class="view3"><span class="class-dot"></span><i class="fa-solid fa-folder-open" style="color:var(--purple);font-size:.85rem"></i> የማእከላውያን</button><button class="class-btn c4" data-class="view4"><span class="class-dot"></span><i class="fa-solid fa-folder-open" style="color:var(--rose);font-size:.85rem"></i> የወጣቶች</button></div></div>
+    
+    <div class="save-action-row"><button class="cancel-mini-btn" id="saveCancelBtn" type="button"><i class="fa-solid fa-xmark"></i> Cancel</button><button class="finished-btn" id="finishedBtn" disabled><i class="fa-solid fa-check"></i> Finished</button></div></div></div>
+
+  <div class="overlay table-overlay" id="tableOverlay"><div class="overlay-bg"></div><div class="anim-box table-box"><div class="table-header"><div class="header-left"><div class="table-title" id="tableTitle"><span class="doc-count-icon" id="tableCountIcon">0</span><button class="search-icon-btn" id="searchIconBtn" title="Search names"><i class="fa-solid fa-magnifying-glass"></i></button><input type="text" class="search-input" id="searchInput" placeholder="Name or Age..."><button class="search-clear-btn" id="searchClearBtn" title="Clear search"><i class="fa-solid fa-xmark"></i></button></div><div class="select-bar" id="selectBar"><button class="sel-btn" id="selectAllBtn"><i class="fa-solid fa-check-double"></i> All</button><button class="sel-btn move-btn" id="moveBtn" disabled><i class="fa-solid fa-arrows-up-down-left-right"></i> Move</button><button class="sel-btn delete-sel-btn" id="deleteSelBtn" disabled><i class="fa-solid fa-trash-can"></i> Delete</button><button class="sel-btn exit-btn" id="exitSelectBtn"><i class="fa-solid fa-xmark"></i> Exit</button><span class="sel-count"><i class="fa-solid fa-circle-info"></i> <span id="selectCount">0</span></span></div></div><button class="table-close" id="tableCloseBtn"><i class="fa-solid fa-xmark"></i></button></div><div class="table-wrap"><table class="doc-table" id="docTable"><thead><tr><th class="col-check"></th><th>#</th><th>Name</th></tr></thead><tbody id="tableBody"></tbody></table></div></div></div>
 
   <div class="overlay detail-overlay" id="detailOverlay"><div class="overlay-bg"></div><div class="anim-box detail-box"><div class="detail-header"><div class="detail-title"><i class="fa-solid fa-images"></i> Image Preview</div><div class="detail-header-right"><button class="add-img-btn" id="addImgBtn"><i class="fa-solid fa-plus"></i> Add Image</button><button class="detail-close" id="detailCloseBtn"><i class="fa-solid fa-xmark"></i></button></div></div><div class="id-card" id="idCard" style="display:none"><div class="id-card-photo" id="idCardPhoto"><i class="fa-solid fa-user"></i></div><div class="id-card-info"><div class="id-card-name" id="idCardName"></div><div class="id-card-bday" id="idCardBday"></div><div class="id-card-age" id="idCardAge"></div></div></div><div class="detail-images" id="detailImages"></div></div></div>
 
   <div class="overlay" id="addImgOverlay" style="z-index:145"><div class="overlay-bg"></div><div class="anim-box addimg-box"><div class="addimg-title"><i class="fa-solid fa-plus-circle"></i> Add Image</div><div id="addImgStep1" class="addimg-row"><button class="addimg-opt" id="addImgFileBtn"><i class="fa-solid fa-folder-open" style="color:var(--gold)"></i> Choose File</button><button class="addimg-opt" id="addImgCamBtn"><i class="fa-solid fa-camera" style="color:var(--accent)"></i> Camera</button></div><div id="addImgStep2" class="addimg-step2"><div class="preview-stage" id="addImgStage"><img class="addimg-preview" id="addImgPreview" src="" alt="New image"></div><div class="preview-actions" style="width:80vw; justify-content:center"><button class="preview-btn edit-btn" id="addImgEditBtn"><i class="fa-solid fa-crop-simple"></i> Edit</button><button class="preview-btn next-btn" id="addImgNextBtn"><i class="fa-solid fa-arrow-right"></i> Next</button></div></div><div id="addImgStep3" class="addimg-step2"><div class="addimg-thumb-row"><img class="addimg-thumb" id="addImgThumb" src="" alt="Preview"><span class="addimg-thumb-label">Name this image</span></div><div class="input-group"><label for="addImgNameInput">Image Name</label><input type="text" id="addImgNameInput" placeholder="Enter image name..."><div class="error-msg" id="addImgNameError"></div></div><button class="finished-btn" id="addImgSaveBtn" disabled><i class="fa-solid fa-check"></i> Save Image</button></div><button class="addimg-cancel" id="addImgCancelBtn">Cancel</button></div></div>
-
-
 
   <div class="overlay" id="moveOverlay" style="z-index:130"><div class="overlay-bg"></div><div class="anim-box popup-box"><div class="popup-title"><i class="fa-solid fa-arrows-up-down-left-right"></i> Move To</div><div id="moveOptions" style="display:flex;flex-direction:column;gap:8px"></div><button class="login-btn" id="moveCancelBtn" style="background:transparent;border:1px solid var(--border);color:var(--muted)">Cancel</button></div></div>
 
@@ -377,7 +403,6 @@
 
   <div class="toast" id="toast"></div>
   <canvas id="captureCanvas" style="display:none"></canvas>
-
 
   <script>
     /* ===== 1. REST API Config ===== */
@@ -461,13 +486,7 @@
       try { var c = localStorage.getItem('cache_' + view); return c ? JSON.parse(c) : null; } catch (e) { return null; }
     }
 
-    /* ===== 4. Smart Merge - KEY FUNCTION ===== */
-    // Cloud is always the source of truth when online.
-    // This handles ALL cross-device sync scenarios:
-    //   - Device A deletes → Device B fetches → cloud has no key → local removes it
-    //   - Device A adds → Device B fetches → cloud has new key → local adds it
-    //   - Device A moves → both views update on Device B
-    // If offline, returns local cache unchanged.
+    /* ===== 4. Smart Merge ===== */
     async function smartFetchView(view) {
       if (!isOnline) {
         return getCachedView(view) || null;
@@ -479,14 +498,11 @@
           return r.json();
         });
 
-        // cloudData is the complete truth - null means empty, object means current state
-        // Replace local cache entirely with cloud data
         var cleaned = cloudData || {};
         cacheView(view, cleaned);
         viewDataCache[view] = cleaned;
         return cleaned;
       } catch (e) {
-        // Network error while online - use cache, will retry on next poll
         return getCachedView(view) || null;
       }
     }
@@ -526,7 +542,6 @@
         else { failedItems.push(item); }
       }
 
-      // Update queue: keep only failed items
       if (failedItems.length === 0) {
         clearOfflineQueue();
       } else {
@@ -537,12 +552,10 @@
 
       if (successCount > 0) {
         showToast('<i class="fa-solid fa-cloud-arrow-up"></i> Synced ' + successCount + ' operation(s)!', 3000);
-        // After syncing, refresh ALL views from cloud to catch any cross-device changes
         await refreshAllViewsFromCloud();
       }
     }
 
-    // Full cloud refresh for all views - called after sync and on online event
     async function refreshAllViewsFromCloud() {
       var views = ['view1', 'view2', 'view3', 'view4'];
       var changed = false;
@@ -555,7 +568,6 @@
         var freshData = await smartFetchView(view);
         var newKeys = freshData ? Object.keys(freshData) : [];
 
-        // Detect if anything changed
         if (oldKeys.length !== newKeys.length) { changed = true; }
         else {
           for (var k = 0; k < oldKeys.length; k++) {
@@ -564,7 +576,6 @@
         }
       }
 
-      // Update UI if something changed
       if (changed) {
         updateBadges();
         if (activeView) renderTable(activeView);
@@ -654,7 +665,6 @@
     window.addEventListener('online', function () {
       isOnline = true;
       showToast('<i class="fa-solid fa-wifi"></i> Back online!', 2000);
-      // CRITICAL: When coming online, first sync offline queue, then refresh from cloud
       syncOfflineQueue().then(function () {
         refreshAllViewsFromCloud();
       });
@@ -677,91 +687,10 @@
       el.appendChild(r); setTimeout(function () { r.remove(); }, 600);
     }
 
-    /* ===== 9. Password Hash (with fallback for file:// protocol) ===== */
-    // crypto.subtle only works in secure contexts (HTTPS / localhost).
-    // When the file is opened via file://, crypto.subtle is undefined and
-    // login silently fails. We fall back to a pure-JS SHA-256 implementation
-    // that produces the same hex output as crypto.subtle.digest.
-    function utf8EncodeString(str) {
-      if (window.TextEncoder) {
-        var bytes = new TextEncoder().encode(str);
-        var out = '';
-        for (var i = 0; i < bytes.length; i++) out += String.fromCharCode(bytes[i]);
-        return out;
-      }
-      try { return unescape(encodeURIComponent(str)); } catch (e) { return str; }
-    }
-    function sha256Sync(ascii) {
-      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
-      var mathPow = Math.pow, maxWord = mathPow(2, 32), lengthProperty = 'length';
-      var i, j, result = '';
-      var words = [];
-      var asciiBitLength = ascii[lengthProperty] * 8;
-      var hash = sha256Sync.h = sha256Sync.h || [];
-      var k = sha256Sync.k = sha256Sync.k || [];
-      var primeCounter = k[lengthProperty];
-      var isComposite = {};
-      for (var candidate = 2; primeCounter < 64; candidate++) {
-        if (!isComposite[candidate]) {
-          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
-          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
-          k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
-        }
-      }
-      ascii += '\x80';
-      while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
-      for (i = 0; i < ascii[lengthProperty]; i++) {
-        j = ascii.charCodeAt(i);
-        if (j >> 8) return;
-        words[i >> 2] |= j << ((3 - i) % 4) * 8;
-      }
-      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
-      words[words[lengthProperty]] = (asciiBitLength);
-      for (j = 0; j < words[lengthProperty];) {
-        var w = words.slice(j, j += 16);
-        var oldHash = hash;
-        hash = hash.slice(0, 8);
-        for (i = 0; i < 64; i++) {
-          var w15 = w[i - 15], w2 = w[i - 2];
-          var a = hash[0], e = hash[4];
-          var temp1 = hash[7]
-            + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
-            + ((e & hash[5]) ^ ((~e) & hash[6]))
-            + k[i]
-            + (w[i] = i < 16 ? w[i] : (
-              w[i - 16]
-              + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
-              + w[i - 7]
-              + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
-            ) | 0
-          );
-          var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
-            + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
-          hash = [(temp1 + temp2) | 0].concat(hash);
-          hash[4] = (hash[4] + temp1) | 0;
-        }
-        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
-      }
-      for (i = 0; i < 8; i++) {
-        for (j = 3; j + 1; j--) {
-          var b = (hash[i] >> (j * 8)) & 255;
-          result += ((b < 16) ? 0 : '') + b.toString(16);
-        }
-      }
-      return result;
-    }
+    /* ===== 9. Password Hash ===== */
     async function hashPassword(pw) {
-      // Try Web Crypto API first (HTTPS / localhost)
-      if (window.crypto && window.crypto.subtle && window.crypto.subtle.digest) {
-        try {
-          var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
-          return [...new Uint8Array(buf)].map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
-        } catch (e) {
-          console.warn('crypto.subtle.digest failed, falling back to JS SHA-256:', e);
-        }
-      }
-      // Fallback for file:// protocol or unsupported environments
-      return sha256Sync(utf8EncodeString(pw));
+      var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+      return [...new Uint8Array(buf)].map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
     }
 
     /* ===== 10. Login ===== */
@@ -771,29 +700,18 @@
       loginBtn.disabled = true; loginBtn.innerHTML = '<span class="spinner"></span> Logging in...'; loginError.textContent = '';
       try {
         var hashed = await hashPassword(pass);
-        console.log('Login attempt - hash prefix:', hashed.substring(0, 8) + '...');
         var stored = await restGet('_config/password');
-        console.log('Stored password exists:', stored !== null, 'type:', typeof stored);
         if (stored === null) {
-          // First-time setup: create the password
           await restSet('_config', { password: hashed });
-          console.log('Password created (first-time setup)');
           loginSuccess();
         } else if (stored === hashed) {
-          console.log('Password matched');
           loginSuccess();
         } else {
-          console.warn('Password mismatch. Stored prefix:', String(stored).substring(0, 8), 'Got prefix:', hashed.substring(0, 8));
           loginError.textContent = 'Wrong password!';
         }
       } catch (e) {
-        console.error('Login error:', e);
-        if (localStorage.getItem('loggedIn') === 'true') {
-          console.log('Network error but previously logged in - allowing local access');
-          loginSuccess();
-        } else {
-          loginError.textContent = 'Connection error - check your network and try again';
-        }
+        if (localStorage.getItem('loggedIn') === 'true') { loginSuccess(); }
+        else { loginError.textContent = 'Connection error - try again'; }
       }
       loginBtn.disabled = false; loginBtn.innerHTML = 'Login';
     }
@@ -848,17 +766,14 @@
 
     /* ===== 12. Init App ===== */
     function initApp() {
-      // Load cached data into memory immediately
       Object.keys(viewMap).forEach(function (key) {
         var cached = getCachedView(key);
         if (cached) viewDataCache[key] = cached;
       });
 
-      // Initial badge update + cloud refresh
       updateBadges();
       refreshAllViewsFromCloud();
 
-      // Poll every 15 seconds to detect cross-device changes (deletes, adds, moves)
       pollTimer = setInterval(function () {
         if (!isOnline) return;
         refreshAllViewsFromCloud();
@@ -887,24 +802,27 @@
         addRipple(e, this);
       }, { passive: false });
     });
+    
+    // Add Doc automatically opens Save Document
     document.getElementById('btnAdd2').addEventListener('click', function (e) {
-      addRipple(e, document.getElementById('btnAdd2'));
-      // Directly open Save Document overlay (skip File/Camera sub-choice)
-      document.getElementById('subChoice').classList.remove('visible');
+      currentProcessedImage = null;
+      // Reset form fields
+      document.getElementById('christianName').value = '';
+      document.getElementById('firstName').value = '';
+      document.getElementById('lastName').value = '';
+      document.getElementById('phone').value = '';
+      var gRadio = document.querySelector('input[name="gender"]:checked');
+      if (gRadio) gRadio.checked = false;
+      
       document.getElementById('saveOverlay').classList.add('active');
-      setTimeout(function(){ var f = document.getElementById('christianNameInput'); if (f) f.focus(); }, 120);
-    });
-    document.getElementById('backBtn').addEventListener('click', function () {
-      document.getElementById('subChoice').classList.remove('visible');
+      
+      if (!qrExtractedLogo && !qrExtractedBackground) {
+        loadCBZZip();
+      }
+      addRipple(e, document.getElementById('btnAdd2'));
     });
 
-    /* ===== 14. File & Camera ===== */
-    document.getElementById('chooseFileBtn').addEventListener('click', function () { fileInput.click(); });
-    fileInput.addEventListener('change', function (e) {
-      if (e.target.files[0]) processImageFile(URL.createObjectURL(e.target.files[0]));
-      fileInput.value = '';
-    });
-    document.getElementById('cameraShotBtn').addEventListener('click', openCam);
+    /* ===== 14. Camera logic for personal photo ===== */
     document.getElementById('closeCamBtn').addEventListener('click', closeCam);
     document.getElementById('captureBtn').addEventListener('click', takePicture);
 
@@ -928,8 +846,6 @@
       if (personalPhotoMode) {
         personalPhotoMode = false;
         setPersonalPhoto(captureCanvas.toDataURL('image/jpeg', 0.85));
-      } else {
-        processImageFile(captureCanvas.toDataURL('image/jpeg', 0.85));
       }
     }
 
@@ -995,41 +911,16 @@
       var img = document.getElementById('previewImg');
       img.src = src; img.dataset.origSrc = src; img.style.clipPath = ''; img.style.transform = '';
       document.getElementById('previewOverlay').classList.add('active');
-      document.getElementById('previewEditBtn').innerHTML = '<i class="fa-solid fa-crop-simple"></i> Edit';
-      document.getElementById('previewLabel').textContent = 'Drag to crop area (Edit Mode)';
-      var nextHandler = function () {
-        currentProcessedImage = img.src;
-        document.getElementById('previewOverlay').classList.remove('active');
-        document.getElementById('saveOverlay').classList.add('active');
-        document.getElementById('previewNextBtn').removeEventListener('click', nextHandler);
-      };
-      document.getElementById('previewNextBtn').addEventListener('click', nextHandler);
+      document.getElementById('previewLabel').textContent = 'QR Code Generated Successfully';
     }
 
     document.getElementById('previewCloseBtn').addEventListener('click', function () {
       document.getElementById('previewOverlay').classList.remove('active');
     });
-    document.getElementById('previewEditBtn').addEventListener('click', function () {
-      var img = document.getElementById('previewImg'), isE = img.style.clipPath !== '';
-      img.style.clipPath = isE ? '' : 'inset(10% 10% 10% 10%)';
-      document.getElementById('previewEditBtn').innerHTML = isE ? '<i class="fa-solid fa-crop-simple"></i> Edit' : '<i class="fa-solid fa-check"></i> Done';
-      document.getElementById('previewLabel').textContent = isE ? 'Drag to crop area (Edit Mode)' : 'Crop applied!';
-    });
 
-    /* ===== 15. Save Flow ===== */
-    var churchInput = document.getElementById('churchInput'),
-      christianNameInput = document.getElementById('christianNameInput'),
-      firstNameInput = document.getElementById('firstNameInput'),
-      lastNameInput = document.getElementById('lastNameInput'),
-      phoneInput = document.getElementById('phoneInput'),
-      finishedBtn = document.getElementById('finishedBtn');
+    /* ===== 15. Save Flow & Generate QR ===== */
+    var finishedBtn = document.getElementById('finishedBtn');
 
-    [christianNameInput, firstNameInput, lastNameInput, phoneInput].forEach(function (el) {
-      el.addEventListener('input', validateSave);
-    });
-    document.querySelectorAll('input[name="gender"]').forEach(function (r) {
-      r.addEventListener('change', validateSave);
-    });
     document.querySelectorAll('.class-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
         document.querySelectorAll('.class-btn').forEach(function (b) { b.classList.remove('selected'); });
@@ -1037,219 +928,140 @@
       });
     });
     function validateSave() {
-      var cName = christianNameInput.value.trim();
-      var fName = firstNameInput.value.trim();
-      var lName = lastNameInput.value.trim();
-      var phone = phoneInput.value.trim();
-      var gender = document.querySelector('input[name="gender"]:checked');
       var day = parseInt(document.getElementById('birthDay').value);
       var month = parseInt(document.getElementById('birthMonth').value);
       var year = parseInt(document.getElementById('birthYear').value);
       var maxD = month === 13 ? 6 : 30;
       var bdayValid = day && month && year && day >= 1 && day <= maxD && year >= 1890 && year <= 2020;
-      var qrValid = cName && /^[A-Za-z\s]+$/.test(cName) &&
-                    fName && /^[A-Za-z\s]+$/.test(fName) &&
-                    lName && /^[A-Za-z\s]+$/.test(lName) &&
-                    phone && /^[0-9]{10,15}$/.test(phone) && gender;
-      finishedBtn.disabled = !(qrValid && targetClass && bdayValid);
+      finishedBtn.disabled = !(targetClass && bdayValid);
     }
 
     finishedBtn.addEventListener('click', async function () {
-      var cName = christianNameInput.value.trim();
-      var fName = firstNameInput.value.trim();
-      var lName = lastNameInput.value.trim();
-      var phone = phoneInput.value.trim();
-      var genderEl = document.querySelector('input[name="gender"]:checked');
-      if (!cName || !fName || !lName || !phone || !genderEl || !targetClass) return;
-      var gender = genderEl.value;
-      var fullName = fName + ' ' + lName;  // First + Last → table name
-      document.getElementById('saveOverlay').classList.remove('active');
-      uploadText.textContent = 'Generating QR...'; uploadSub.textContent = 'Building image locally';
-      uploadOfflineNote.style.display = 'none'; uploadOverlay.classList.add('active');
-      try {
-        var bday = null;
-        var bd = parseInt(document.getElementById('birthDay').value);
-        var bm = parseInt(document.getElementById('birthMonth').value);
-        var by = parseInt(document.getElementById('birthYear').value);
-        if (bd && bm && by) { bday = { day: bd, month: bm, monthName: ethMonthNames[bm], year: by }; }
-
-        // QR data payload (same format as standalone QR generator)
-        var qrData = 'Church: ' + churchInput.value + '\n' +
-                     'Christian Name: ' + cName + '\n' +
-                     'First Name: ' + fName + '\n' +
-                     'Last Name: ' + lName + '\n' +
-                     'Phone: ' + phone + '\n' +
-                     'Gender: ' + gender;
-
-        // Generate QR image locally (NO Cloudinary / cloud upload)
-        var qrImage = await generateQRImage(qrData, fullName);
-
-        var entry = {
-          name: fullName,            // image/document name = full name
-          user: fullName,            // table name = First + Last
-          image: qrImage,            // QR image (data URL) - local only
-          timestamp: Date.now(),
-          birthday: bday,
-          personalPhoto: personalPhotoData || null,
-          qrData: qrData,            // store QR payload for re-download
-          isQR: true                 // flag: this is a QR-generated doc
-        };
-
-        // LOCAL ONLY - skip restPush (no Cloudinary / cloud upload)
-        var cached = viewDataCache[targetClass] || {};
-        var newId = 'local_' + Date.now();
-        cached[newId] = entry;
-        viewDataCache[targetClass] = cached;
-        cacheView(targetClass, cached);
-
-        uploadOverlay.classList.remove('active');
-        showToast('<i class="fa-solid fa-check-circle"></i> QR generated & saved locally!');
-
-        if (activeView === targetClass) renderTable(targetView);
-        updateBadges();
-      } catch (e) {
-        console.error('QR generation error:', e);
-        showToast('<i class="fa-solid fa-triangle-exclamation"></i> Error generating QR');
-        uploadOverlay.classList.remove('active');
+      if (!targetClass) return;
+      
+      const cName = document.getElementById("christianName").value.trim();
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName = document.getElementById("lastName").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const gender = document.querySelector('input[name="gender"]:checked');
+      const errEl = document.getElementById('qr-error');
+      
+      if (!cName || !/^[A-Za-z\s]+$/.test(cName)) { errEl.textContent = "Please enter a valid Christian Name"; return; }
+      if (!firstName || !/^[A-Za-z\s]+$/.test(firstName)) { errEl.textContent = "Please enter a valid First Name"; return; }
+      if (!lastName || !/^[A-Za-z\s]+$/.test(lastName)) { errEl.textContent = "Please enter a valid Last Name"; return; }
+      if (!phone || !/^[0-9]{10,15}$/.test(phone)) { errEl.textContent = "Please enter a valid Phone Number"; return; }
+      if (!gender) { errEl.textContent = "እባክዎ ጾታዎን ያስገቡ"; return; }
+      
+      errEl.textContent = '';
+      
+      if (!qrExtractedLogo || !qrExtractedBackground) {
+        errEl.textContent = "Loading QR resources, please wait a moment...";
+        if (!qrIsLoading) loadCBZZip();
+        return;
       }
-      // Reset all fields
-      christianNameInput.value = ''; firstNameInput.value = ''; lastNameInput.value = ''; phoneInput.value = '';
-      document.querySelectorAll('input[name="gender"]').forEach(function(r){ r.checked = false; });
-      targetClass = null;
-      document.getElementById('birthDay').value = ''; document.getElementById('birthMonth').value = ''; document.getElementById('birthYear').value = '';
-      document.getElementById('ageDisplay').innerHTML = ''; clearPersonalPhoto();
-      document.querySelectorAll('.class-btn').forEach(function (b) { b.classList.remove('selected'); });
-      finishedBtn.disabled = true; document.getElementById('subChoice').classList.remove('visible');
-    });
 
-    /* ===== 15c. QR Generator - Local image build (no Cloudinary) ===== */
-    // Builds a composite image: branded background canvas + QR code overlay.
-    // Returns a PNG data URL displayed in the table's Image Preview column.
-    function generateQRImage(qrData, fullName) {
-      return new Promise(function (resolve, reject) {
-        try {
-          var qr = new QRCodeStyling({
-            width: 700,
-            height: 700,
-            type: 'canvas',
+      var btn = finishedBtn;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Saving...';
+      
+      try {
+        const Church = document.getElementById("Church").value;
+        const qrData = `Church: ${Church}\nChristian Name: ${cName}\nFirst Name: ${firstName}\nLast Name: ${lastName}\nPhone: ${phone}\nGender: ${gender.value}`;
+        
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          qrGeneratorInstance.update({
             data: qrData,
-            image: '',
-            dotsOptions: { color: '#000000', type: 'rounded' },
-            cornersSquareOptions: { color: '#CB1433', type: 'extra-rounded' },
-            backgroundOptions: { color: '#ffffff' },
-            imageOptions: { crossOrigin: 'anonymous', margin: 6 }
+            image: e.target.result
           });
 
-          // Append to hidden container to trigger rendering
-          var temp = document.createElement('div');
-          temp.style.cssText = 'position:absolute;left:-9999px;top:-9999px;';
-          document.body.appendChild(temp);
-          qr.append(temp);
-
-          var attempts = 0;
-          function checkQR() {
-            attempts++;
-            var qrCanvas = temp.querySelector('canvas');
-            if (qrCanvas && qrCanvas.width > 0 && qrCanvas.height > 0) {
-              compositeQR(qrCanvas);
-            } else if (attempts < 50) {
-              setTimeout(checkQR, 100);
-            } else {
-              try { document.body.removeChild(temp); } catch (_) {}
-              reject(new Error('QR canvas rendering timeout'));
-            }
-          }
-
-          function compositeQR(qrCanvas) {
+          setTimeout(async function() {
             try {
-              var W = 1000, H = 1400;
-              var bgCanvas = document.createElement('canvas');
-              bgCanvas.width = W; bgCanvas.height = H;
-              var ctx = bgCanvas.getContext('2d');
+              const bgImg = new Image();
+              bgImg.src = URL.createObjectURL(qrExtractedBackground);
+              bgImg.onload = async function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = bgImg.naturalWidth;
+                canvas.height = bgImg.naturalHeight;
+                ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+                
+                const qrCanvas = document.querySelector('#qrGeneratorHidden canvas');
+                if (qrCanvas) {
+                  ctx.drawImage(qrCanvas, QR_LEFT, QR_TOP, DOWNLOAD_QR_WIDTH, DOWNLOAD_QR_HEIGHT);
+                }
+                
+                const finalDataURL = canvas.toDataURL('image/png');
+                currentProcessedImage = finalDataURL;
 
-              // Background gradient (matches File One theme)
-              var grad = ctx.createLinearGradient(0, 0, 0, H);
-              grad.addColorStop(0, '#1a1a24');
-              grad.addColorStop(0.5, '#0e0f14');
-              grad.addColorStop(1, '#1a1a24');
-              ctx.fillStyle = grad;
-              ctx.fillRect(0, 0, W, H);
+                // Upload to Firebase
+                let base64 = await compressImage(currentProcessedImage, 0.6, 1200);
+                var bday = null;
+                var bd = parseInt(document.getElementById('birthDay').value);
+                var bm = parseInt(document.getElementById('birthMonth').value);
+                var by = parseInt(document.getElementById('birthYear').value);
+                if (bd && bm && by) { bday = { day: bd, month: bm, monthName: ethMonthNames[bm], year: by }; }
+                
+                var name = 'QR Code';
+                var user = firstName + ' ' + lastName;
 
-              // Gold double border
-              ctx.strokeStyle = '#d4a03c';
-              ctx.lineWidth = 8;
-              ctx.strokeRect(30, 30, W - 60, H - 60);
-              ctx.strokeStyle = 'rgba(212,160,60,0.35)';
-              ctx.lineWidth = 2;
-              ctx.strokeRect(50, 50, W - 100, H - 100);
+                var entry = { name: name, user: user, image: base64, timestamp: Date.now(), birthday: bday, personalPhoto: personalPhotoData || null };
 
-              // Church name (Amharic)
-              ctx.fillStyle = '#d4a03c';
-              ctx.font = 'bold 80px "Space Grotesk", sans-serif';
-              ctx.textAlign = 'center';
-              ctx.fillText('ሐመረ-ኖኅ', W / 2, 180);
+                var result = await restPush(targetClass, entry);
 
-              // Subtitle
-              ctx.fillStyle = '#f0ece4';
-              ctx.font = '36px "Space Grotesk", sans-serif';
-              ctx.fillText('ሰንበት ት/ቤት', W / 2, 240);
-              ctx.fillStyle = '#6b6872';
-              ctx.font = '22px "Space Grotesk", sans-serif';
-              ctx.fillText('Sunday School Student Document', W / 2, 280);
+                var cached = viewDataCache[targetClass] || {};
+                var newId = result.name || ('local_' + Date.now());
+                cached[newId] = entry;
+                viewDataCache[targetClass] = cached;
+                cacheView(targetClass, cached);
 
-              // White rounded card behind QR (for contrast)
-              var qrSize = 700;
-              var qrX = (W - qrSize) / 2;
-              var qrY = 340;
-              var pad = 20;
-              var r = 24;
-              ctx.fillStyle = '#ffffff';
-              ctx.beginPath();
-              ctx.moveTo(qrX - pad + r, qrY - pad);
-              ctx.arcTo(qrX - pad + qrSize + pad * 2, qrY - pad, qrX - pad + qrSize + pad * 2, qrY - pad + qrSize + pad * 2, r);
-              ctx.arcTo(qrX - pad + qrSize + pad * 2, qrY - pad + qrSize + pad * 2, qrX - pad, qrY - pad + qrSize + pad * 2, r);
-              ctx.arcTo(qrX - pad, qrY - pad + qrSize + pad * 2, qrX - pad, qrY - pad, r);
-              ctx.arcTo(qrX - pad, qrY - pad, qrX - pad + qrSize + pad * 2, qrY - pad, r);
-              ctx.closePath();
-              ctx.fill();
+                if (result.offline) {
+                  showToast('<i class="fa-solid fa-wifi-slash"></i> Saved offline - will sync');
+                } else {
+                  showToast('<i class="fa-solid fa-check-circle"></i> Saved successfully!');
+                }
 
-              // QR code
-              ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+                if (activeView === targetClass) renderTable(targetClass);
+                updateBadges();
+                
+                // Reset form
+                targetClass = null;
+                document.getElementById('birthDay').value = ''; document.getElementById('birthMonth').value = ''; document.getElementById('birthYear').value = '';
+                document.getElementById('ageDisplay').innerHTML = ''; clearPersonalPhoto();
+                document.querySelectorAll('.class-btn').forEach(function (b) { b.classList.remove('selected'); });
+                finishedBtn.disabled = false; 
+                finishedBtn.innerHTML = '<i class="fa-solid fa-check"></i> Finished';
+                document.getElementById('christianName').value = '';
+                document.getElementById('firstName').value = '';
+                document.getElementById('lastName').value = '';
+                document.getElementById('phone').value = '';
+                var gRadio = document.querySelector('input[name="gender"]:checked');
+                if (gRadio) gRadio.checked = false;
 
-              // Name label
-              ctx.fillStyle = '#f0ece4';
-              ctx.font = 'bold 48px "Space Grotesk", sans-serif';
-              ctx.fillText(fullName, W / 2, 1180);
-
-              // Footer
-              ctx.fillStyle = '#2ec4a2';
-              ctx.font = '26px "Space Grotesk", sans-serif';
-              ctx.fillText('Scan QR to view student details', W / 2, 1240);
-              ctx.fillStyle = '#6b6872';
-              ctx.font = '20px "Space Grotesk", sans-serif';
-              ctx.fillText(new Date().toLocaleDateString(), W / 2, 1300);
-
-              // Cleanup temp container
-              try { document.body.removeChild(temp); } catch (_) {}
-              resolve(bgCanvas.toDataURL('image/png'));
-            } catch (e) {
-              try { document.body.removeChild(temp); } catch (_) {}
-              reject(e);
+                // Hide Save Overlay
+                document.getElementById('saveOverlay').classList.remove('active');
+                
+                // Show Image Preview (like an image, no Next button)
+                processImageFile(finalDataURL);
+              };
+            } catch (err) {
+              console.error("Error merging QR:", err);
+              btn.disabled = false;
+              btn.innerHTML = '<i class="fa-solid fa-check"></i> Finished';
+              showToast('<i class="fa-solid fa-triangle-exclamation"></i> Error generating QR');
             }
-          }
+          }, 800);
+        };
+        reader.readAsDataURL(qrExtractedLogo);
+      } catch (e) { 
+        showToast('<i class="fa-solid fa-triangle-exclamation"></i> Error saving'); 
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Finished';
+      }
+    });
 
-          setTimeout(checkQR, 50);
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }
-
-    /* ===== 15b. Cancel Save - mini cancel button on the left of Finished */
     document.getElementById('saveCancelBtn').addEventListener('click', function () {
       document.getElementById('saveOverlay').classList.remove('active');
-      christianNameInput.value = ''; firstNameInput.value = ''; lastNameInput.value = ''; phoneInput.value = '';
-      document.querySelectorAll('input[name="gender"]').forEach(function(r){ r.checked = false; });
       targetClass = null;
       document.getElementById('birthDay').value = '';
       document.getElementById('birthMonth').value = '';
@@ -1258,8 +1070,14 @@
       clearPersonalPhoto();
       document.querySelectorAll('.class-btn').forEach(function (b) { b.classList.remove('selected'); });
       finishedBtn.disabled = true;
-      document.getElementById('subChoice').classList.remove('visible');
       currentProcessedImage = null;
+      document.getElementById('qr-error').textContent = '';
+      document.getElementById('christianName').value = '';
+      document.getElementById('firstName').value = '';
+      document.getElementById('lastName').value = '';
+      document.getElementById('phone').value = '';
+      var gRadio = document.querySelector('input[name="gender"]:checked');
+      if (gRadio) gRadio.checked = false;
       showToast('<i class="fa-solid fa-xmark"></i> Cancelled', 1500);
     });
 
@@ -1276,8 +1094,96 @@
       });
     }
 
-    /* ===== 16. Table View ===== */
+    /* ===== QR Generator Integration ===== */
+    let qrExtractedLogo = null;
+    let qrExtractedBackground = null;
+    let qrIsLoading = false;
 
+    const CBZ_ZIP_URL = "CBZ.zip";
+    const DOWNLOAD_QR_WIDTH = 1400;
+    const DOWNLOAD_QR_HEIGHT = 1400;
+    const QR_LEFT = 545;
+    const QR_TOP = 917;
+
+    const qrGeneratorInstance = new QRCodeStyling({
+      width: DOWNLOAD_QR_WIDTH,
+      height: DOWNLOAD_QR_HEIGHT,
+      type: "canvas",
+      data: "Initializing...",
+      image: "",
+      dotsOptions: { color: "#000000", type: "rounded" },
+      cornersSquareOptions: { color: "#CB1433", type: "extra-rounded" },
+      backgroundOptions: { color: "transparent" },
+      imageOptions: { crossOrigin: "anonymous", margin: 6 }
+    });
+
+    async function loadCBZZip() {
+      if (qrIsLoading) return;
+      qrIsLoading = true;
+      try {
+        const response = await fetch(CBZ_ZIP_URL);
+        if (!response.ok) throw new Error("Failed to load CBZ.zip");
+        const zipBlob = await response.blob();
+        const zipFile = new File([zipBlob], 'CBZ.zip', { type: 'application/zip' });
+        await processZipFile(zipFile);
+      } catch (error) {
+        console.error("Error loading CBZ.zip:", error);
+      } finally {
+        qrIsLoading = false;
+      }
+    }
+
+    async function processZipFile(file) {
+      try {
+        const zip = new JSZip();
+        const contents = await zip.loadAsync(file);
+        let logoFile = null;
+        let backgroundFile = null;
+
+        for (const filename in contents.files) {
+          if (contents.files[filename].dir) continue;
+          const lowerFilename = filename.toLowerCase();
+          if (lowerFilename.includes('logo') || lowerFilename.includes('icon')) {
+            logoFile = contents.files[filename];
+          } else if (lowerFilename.includes('background') || lowerFilename.includes('bg') || lowerFilename.includes('card') || lowerFilename.includes('template')) {
+            backgroundFile = contents.files[filename];
+          }
+        }
+
+        if (!logoFile || !backgroundFile) {
+          const imageFiles = [];
+          for (const filename in contents.files) {
+            if (contents.files[filename].dir) continue;
+            const lowerFilename = filename.toLowerCase();
+            if (lowerFilename.endsWith('.png') || lowerFilename.endsWith('.jpg') || lowerFilename.endsWith('.jpeg') || lowerFilename.endsWith('.gif')) {
+              imageFiles.push(contents.files[filename]);
+            }
+          }
+          if (imageFiles.length > 0 && !logoFile) logoFile = imageFiles[0];
+          if (imageFiles.length > 1 && !backgroundFile) backgroundFile = imageFiles[1];
+        }
+
+        if (logoFile) {
+          const logoData = await logoFile.async('blob');
+          qrExtractedLogo = new File([logoData], 'logo.png', { type: 'image/png' });
+        }
+        if (backgroundFile) {
+          const bgData = await backgroundFile.async('blob');
+          qrExtractedBackground = new File([bgData], 'background.png', { type: 'image/png' });
+        }
+      } catch (error) {
+        console.error("Error processing zip:", error);
+      }
+    }
+
+    const qrHiddenDiv = document.createElement('div');
+    qrHiddenDiv.id = 'qrGeneratorHidden';
+    qrHiddenDiv.style.display = 'none';
+    document.body.appendChild(qrHiddenDiv);
+    qrGeneratorInstance.append(qrHiddenDiv);
+
+
+    /* ===== 16. Table View ===== */
     function openTable(view) {
       activeView = view; selectMode = false; selectedIds.clear(); exitSelectMode();
       var info = viewMap[view];
@@ -1290,7 +1196,7 @@
     function renderTableRows(view, data) {
       tableBody.innerHTML = '';
       if (!data || Object.keys(data).length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="4" class="doc-hint"><i class="fa-solid fa-inbox"></i>No documents yet</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="3" class="doc-hint"><i class="fa-solid fa-inbox"></i>No documents yet</td></tr>';
         tableCountIcon.textContent = '0';
         return;
       }
@@ -1303,16 +1209,10 @@
       arr.forEach(function (item, i) {
         var id = item[0], doc = item[1];
         var tr = document.createElement('tr'); tr.dataset.id = id; tr.dataset.view = view;
-        var qrCell = '';
-        if (doc.image) {
-          qrCell = '<td class="doc-qr-cell"><img class="doc-qr-thumb" src="' + doc.image + '" alt="QR" title="Tap to view"></td>';
-        } else {
-          qrCell = '<td class="doc-qr-cell"><span class="doc-qr-placeholder"><i class="fa-solid fa-image"></i></span></td>';
-        }
-        tr.innerHTML = '<td class="cell-check"><i class="fa-regular fa-square"></i></td><td class="doc-index">' + (i + 1) + '</td><td><div class="name-cell"><span class="doc-name-text">' + (doc.user || 'Unnamed') + '</span><button class="view-icon-btn" title="View"><i class="fa-solid fa-eye"></i></button></div></td>' + qrCell;
+        tr.innerHTML = '<td class="cell-check"><i class="fa-regular fa-square"></i></td><td class="doc-index">' + (i + 1) + '</td><td><div class="name-cell"><span class="doc-name-text">' + (doc.user || 'Unnamed') + '</span><button class="view-icon-btn" title="View"><i class="fa-solid fa-eye"></i></button></div></td>';
         tr.addEventListener('click', function (e) {
-          if (selectMode && !e.target.closest('.view-icon-btn') && !e.target.closest('.doc-qr-thumb')) toggleSelect(tr, id);
-          else if (e.target.closest('.view-icon-btn') || e.target.closest('.doc-qr-thumb')) openDetail(view, id, null);
+          if (selectMode && !e.target.closest('.view-icon-btn')) toggleSelect(tr, id);
+          else if (e.target.closest('.view-icon-btn')) openDetail(view, id, null);
         });
         tableBody.appendChild(tr);
       });
@@ -1354,8 +1254,6 @@
           tr.style.display = (!q || tr.textContent.toLowerCase().includes(q)) ? '' : 'none';
         }
       });
-      // Re-number visible rows sequentially 1, 2, 3 ... so search results
-      // always start at 1 regardless of their original position in the table.
       var seq = 0;
       document.querySelectorAll('#tableBody tr[data-id]').forEach(function (tr) {
         if (tr.style.display !== 'none') {
@@ -1364,17 +1262,12 @@
           var idxCell = tr.querySelector('.doc-index');
           if (idxCell) idxCell.textContent = seq;
         } else {
-          // Hidden rows keep their original number hidden from view, but we
-          // reset it so when search is cleared they get fresh numbers via
-          // the next renderTable call.
           var idxCell = tr.querySelector('.doc-index');
           if (idxCell) idxCell.textContent = '';
         }
       });
       tableCountIcon.textContent = visibleCount;
     }
-
-
 
     /* ===== 17. Select Mode ===== */
     tableCountIcon.addEventListener('click', function () {
@@ -1457,7 +1350,6 @@
         var ids = [...selectedIds];
         var wasOffline = false;
 
-        // Copy items to target
         for (var i = 0; i < ids.length; i++) {
           var id = ids[i];
           var data = await restGet(activeView + '/' + id);
@@ -1467,13 +1359,11 @@
           }
         }
 
-        // Delete items from source
         var updates = {};
         ids.forEach(function (id) { updates[activeView + '/' + id] = null; });
         var pr = await restPatch(updates);
         if (pr.offline) wasOffline = true;
 
-        // Update local caches immediately
         var srcData = viewDataCache[activeView] || {};
         var tgtData = viewDataCache[targetView] || {};
         ids.forEach(function (id) {
@@ -1514,7 +1404,6 @@
 
         var result = await restPatch(updates);
 
-        // Update local cache immediately - REMOVE deleted items
         var data = viewDataCache[activeView] || {};
         idArr.forEach(function (id) { delete data[id]; });
         viewDataCache[activeView] = data;
@@ -1545,7 +1434,6 @@
       detailOverlay.classList.add('active');
       if (!doc) {
         detailImages.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)"><span class="spinner"></span> Loading...</div>';
-        // Try cache first, then cloud
         doc = viewDataCache[view] ? (viewDataCache[view][id] || null) : null;
         if (!doc && isOnline) {
           try { doc = await restGet(view + '/' + id); } catch (e) {}
@@ -1585,7 +1473,6 @@
             var delPath = isExtra ? (view + '/' + parentId + '/extraImages/' + id) : (view + '/' + id);
             var delResult = await restDelete(delPath);
 
-            // Update local cache immediately
             if (!isExtra) {
               var data = viewDataCache[view] || {};
               delete data[id];
@@ -1599,7 +1486,6 @@
               }
             }
 
-            // Animate removal from UI
             item.style.animation = 'imgOutro .3s ease forwards';
             setTimeout(function () {
               item.remove();
@@ -1725,7 +1611,6 @@
         var entry = { name: name, image: base64 };
         var result = await restPush(currentDetailView + '/' + currentDetailId + '/extraImages', entry);
 
-        // Update local cache
         if (viewDataCache[currentDetailView] && viewDataCache[currentDetailView][currentDetailId]) {
           if (!viewDataCache[currentDetailView][currentDetailId].extraImages) {
             viewDataCache[currentDetailView][currentDetailId].extraImages = {};
@@ -1743,7 +1628,6 @@
         }
 
         addImgOverlay.classList.remove('active'); uploadOverlay.classList.remove('active');
-        // Refresh detail view
         var docData = viewDataCache[currentDetailView] ? viewDataCache[currentDetailView][currentDetailId] : null;
         if (docData) openDetail(currentDetailView, currentDetailId, docData);
       } catch (e) { showToast('Error adding image'); uploadOverlay.classList.remove('active'); }
@@ -1757,7 +1641,6 @@
       particlesEl.appendChild(p);
     }
 
-    // Initial offline warning
     if (!navigator.onLine) {
       showToast('<i class="fa-solid fa-wifi-slash"></i> Offline - using cached data', 3000);
     }
