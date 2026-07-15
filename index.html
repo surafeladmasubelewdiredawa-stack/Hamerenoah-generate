@@ -358,7 +358,7 @@
       
       // 1. DISPLAY PREVIEW SETTINGS (300px x 300px screen preview)
       DISPLAY: {
-        fontSize: 8,             // Font size on screen
+        fontSize: 16,             // Font size on screen
         top: 260,                 // Position from top
         left: 150,                // Position from left (center is 150)
         paddingX: 10,             // White box width padding (Left/Right size)
@@ -370,25 +370,25 @@
       // 2. DOWNLOAD IMAGE SETTINGS (1400px width output image)
       DOWNLOAD: {
         fontSize: 75,             // Font size in downloaded image
-        top: 900,                // Position from top
+        top: 1200,                // Position from top
         left: 1245,               // Position from left (center is ~1245)
-        paddingX: 30,             // White box width padding (Left/Right size)
-        paddingY: 15,             // White box height padding (Top/Bottom size)
-        borderRadius: 15,         // Corner radius
+        paddingX: 40,             // White box width padding (Left/Right size)
+        paddingY: 25,             // White box height padding (Top/Bottom size)
+        borderRadius: 45,         // Corner radius
         borderWidth: 12           // Border thickness for downloaded image
       },
       
       // 3. GENERAL STYLE (Applies to both Display and Download)
-      fontColor: "#000000",       // Text Color (Changed to Brown so it's visible) - You can change to "#000000" for black
+      fontColor: "#000000",       // Text Color (Black)
       bgColor: "#FFFFFF",         // White Background Color
       fontWeight: "bold",
       fontFamily: "Arial, sans-serif",
       
-      // 4. BORDER COLORS
+      // 4. BORDER COLORS (4 Sides)
       borderColors: {
-        top: "red",           // Green (Up)
-        bottom: "green",        // Red (Below)
-        left: "yellow",          // Green (Left side)
+        top: "#00FF00",           // Green (Up)
+        bottom: "#FF0000",        // Red (Below)
+        left: "#00FF00",          // Green (Left side)
         right: "#000000"          // Black (Right side)
       }
     };
@@ -649,7 +649,6 @@
         const fullName = `${firstName} ${lastName}`;
         
         if (fullName) {
-          // Use the specific Download settings
           const d = NAME_CONFIG.DOWNLOAD;
           const c = NAME_CONFIG.borderColors;
           const bw = d.borderWidth;
@@ -659,17 +658,17 @@
           ctx.textBaseline = 'middle';
           
           const textWidth = ctx.measureText(fullName).width;
-          const boxWidth = textWidth + d.paddingX * 2 + (bw * 2); // Include border in size
+          const boxWidth = textWidth + d.paddingX * 2 + (bw * 2); 
           const boxHeight = d.fontSize + d.paddingY * 2 + (bw * 2);
           
           const boxX = d.left - boxWidth / 2;
           const boxY = d.top - boxHeight / 2;
+          const outerRadius = d.borderRadius + bw;
+          const innerRadius = d.borderRadius;
 
-          // 1. Draw Outer Color Borders (As a full rectangle)
-          drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, d.borderRadius + bw);
-          
-          // Clip to round the corners of the background fill
+          // 1. Draw Outer Color Borders (4 Colors)
           ctx.save();
+          drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, outerRadius);
           ctx.clip();
           
           // Draw Top Half (Green)
@@ -680,11 +679,11 @@
           ctx.fillStyle = c.bottom;
           ctx.fillRect(boxX, boxY + boxHeight / 2, boxWidth, boxHeight / 2);
           
-          // Draw Left Half (Green) - Overwrites top/bottom on the left
+          // Draw Left Half (Green) - Overwrites left side borders
           ctx.fillStyle = c.left;
           ctx.fillRect(boxX, boxY, boxWidth / 2, boxHeight);
           
-          // Draw Right Half (Black) - Overwrites top/bottom on the right
+          // Draw Right Half (Black) - Overwrites right side borders
           ctx.fillStyle = c.right;
           ctx.fillRect(boxX + boxWidth / 2, boxY, boxWidth / 2, boxHeight);
           
@@ -696,9 +695,12 @@
           const innerW = boxWidth - bw * 2;
           const innerH = boxHeight - bw * 2;
           
-          drawRoundedRect(ctx, innerX, innerY, innerW, innerH, d.borderRadius);
+          ctx.save();
+          drawRoundedRect(ctx, innerX, innerY, innerW, innerH, innerRadius);
+          ctx.clip();
           ctx.fillStyle = NAME_CONFIG.bgColor;
-          ctx.fill();
+          ctx.fillRect(innerX, innerY, innerW, innerH);
+          ctx.restore();
           
           // 3. Draw Text
           ctx.fillStyle = NAME_CONFIG.fontColor;
