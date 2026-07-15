@@ -172,12 +172,8 @@
       margin: 0 10px;
       position: relative;
     }
-    .step-bubble.active {
-      background: #0eac00;
-    }
-    .step-bubble.completed {
-      background: #0eac00;
-    }
+    .step-bubble.active { background: #0eac00; }
+    .step-bubble.completed { background: #0eac00; }
     .step-bubble::after {
       content: '';
       position: absolute;
@@ -186,12 +182,9 @@
       background: #757575;
       right: -20px;
     }
-    .step-bubble:last-child::after {
-      display: none;
-    }
-    .step-bubble.completed::after {
-      background: #0eac00;
-    }
+    .step-bubble:last-child::after { display: none; }
+    .step-bubble.completed::after { background: #0eac00; }
+    
     .dots {
       display: flex;
       gap: 8px;
@@ -209,16 +202,8 @@
     .dots div:nth-child(2) { background: #f5f5f5; animation-delay: 0.2s; }
     .dots div:nth-child(3) { background: #f5f5f5; animation-delay: 0.4s; }
     
-    .button-loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-    }
-    .button-dots {
-      display: flex;
-      gap: 4px;
-    }
+    .button-loading { display: flex; justify-content: center; align-items: center; gap: 8px; }
+    .button-dots { display: flex; gap: 4px; }
     .button-dots div {
       width: 12px;
       height: 12px;
@@ -243,11 +228,7 @@
     .success { background: #d4edda; color: #155724; }
     .error { background: #f8d7da; color: #721c24; }
     
-    .radio-pill-container {
-      display: flex;
-      gap: 10px;
-      margin-top: 8px;
-    }
+    .radio-pill-container { display: flex; gap: 10px; margin-top: 8px; }
     .radio-pill { flex: 1; text-align: center; }
     .radio-pill input[type="radio"] { display: none; }
     .radio-pill label {
@@ -261,11 +242,9 @@
       text-align: center;
       font-weight: 500;
     }
-    .radio-pill input[type="radio"]:checked + label {
-      background: #0eac00;
-      font-weight: 600;
-    }
+    .radio-pill input[type="radio"]:checked + label { background: #0eac00; font-weight: 600; }
     .radio-pill label:hover { background: #5a5a5a; }
+    
     .zip-loading {
       text-align: center;
       margin: 20px 0;
@@ -372,25 +351,38 @@
   </div>
   
   <script>
-    // ==========================================
-    // ===== NAME OVERLAY SETTINGS (Easily change size, color, and position here) =====
-    // ==========================================
+    // ======================================================================
+    // ===== NAME OVERLAY SETTINGS (Change sizes and positions easily here) =====
+    // ======================================================================
     const NAME_CONFIG = {
-      // Position (Relative to the top-left of the image for Download, and top-left of the 300px box for Display)
-      top: 260,                 // Change this to move it up or down
-      left: 150,                // Center of 300px width for display. (For download it's calculated dynamically to match)
       
-      // Size & Style
-      fontSizeRatio: 0.003,     // Ratio relative to image width (e.g., 0.053 means 5.3% of image width). 300px display -> ~16px font.
-      fontColor: "#000000",     // Text Color
-      bgColor: "#FFFFFF",       // Background Color
-      borderRadius: 15,         // Radius for rounded corners
-      paddingXRatio: 0.016,     // Horizontal padding relative to image width
-      paddingYRatio: 0.010,     // Vertical padding relative to image width
+      // 1. DISPLAY PREVIEW SETTINGS (300px x 300px screen preview)
+      DISPLAY: {
+        fontSize: 16,             // Font size on screen
+        top: 260,                 // Position from top
+        left: 150,                // Position from left (center is 150)
+        paddingX: 10,             // White box width padding (Left/Right size)
+        paddingY: 6,              // White box height padding (Top/Bottom size)
+        borderRadius: 15          // Corner radius
+      },
+      
+      // 2. DOWNLOAD IMAGE SETTINGS (1400px width output image)
+      DOWNLOAD: {
+        fontSize: 45,             // Font size in downloaded image
+        top: 1200,                // Position from top
+        left: 1245,               // Position from left (center is ~1245)
+        paddingX: 40,             // White box width padding (Left/Right size)
+        paddingY: 15,             // White box height padding (Top/Bottom size)
+        borderRadius: 15          // Corner radius
+      },
+      
+      // 3. GENERAL STYLE (Applies to both Display and Download)
+      fontColor: "#000000",       // Text Color
+      bgColor: "#FFFFFF",         // White Background Color
       fontWeight: "bold",
       fontFamily: "Arial, sans-serif"
     };
-    // ==========================================
+    // ======================================================================
 
     // Initialize variables
     let currentStep = 1;
@@ -399,7 +391,6 @@
     let extractedLogo = null;
     let extractedBackground = null;
     const CBZ_ZIP_URL = "CBZ.zip";
-    
     const DOWNLOAD_QR_WIDTH = 1400;
     const DOWNLOAD_QR_HEIGHT = 1400;
     const QR_LEFT = 545;
@@ -420,23 +411,18 @@
     // Apply configurations to CSS dynamically for the Display Preview
     (function applyNameConfigToCSS() {
       const style = document.createElement('style');
-      // 300px is the base width of the preview container
-      const previewWidth = 300; 
-      const fs = previewWidth * NAME_CONFIG.fontSizeRatio;
-      const pX = previewWidth * NAME_CONFIG.paddingXRatio;
-      const pY = previewWidth * NAME_CONFIG.paddingYRatio;
-      
+      const d = NAME_CONFIG.DISPLAY;
       style.innerHTML = `
         #name-overlay {
           position: absolute;
-          top: ${NAME_CONFIG.top}px !important;
-          left: ${NAME_CONFIG.left}px !important;
+          top: ${d.top}px !important;
+          left: ${d.left}px !important;
           transform: translate(-50%, -50%) !important;
           background-color: ${NAME_CONFIG.bgColor} !important;
           color: ${NAME_CONFIG.fontColor} !important;
-          padding: ${pY}px ${pX}px !important;
-          border-radius: ${NAME_CONFIG.borderRadius}px !important;
-          font-size: ${fs}px !important;
+          padding: ${d.paddingY}px ${d.paddingX}px !important;
+          border-radius: ${d.borderRadius}px !important;
+          font-size: ${d.fontSize}px !important;
           font-weight: ${NAME_CONFIG.fontWeight} !important;
           font-family: ${NAME_CONFIG.fontFamily} !important;
           white-space: nowrap;
@@ -646,36 +632,28 @@
         const fullName = `${firstName} ${lastName}`;
         
         if (fullName) {
-          // Calculate dimensions dynamically based on the Download Image Size to perfectly match the Display config
-          const scaleFactor = canvas.width / 300; // 300 is our base preview width
-          const fontSize = Math.round((300 * NAME_CONFIG.fontSizeRatio) * scaleFactor);
-          const paddingX = Math.round((300 * NAME_CONFIG.paddingXRatio) * scaleFactor);
-          const paddingY = Math.round((300 * NAME_CONFIG.paddingYRatio) * scaleFactor);
-          const radius = NAME_CONFIG.borderRadius * scaleFactor;
+          // Use the specific Download settings
+          const d = NAME_CONFIG.DOWNLOAD;
           
-          // Calculate Exact Position mapping from our 300px preview to the large canvas
-          const textX = NAME_CONFIG.left * scaleFactor;
-          const textY = NAME_CONFIG.top * scaleFactor;
-          
-          ctx.font = `${NAME_CONFIG.fontWeight} ${fontSize}px ${NAME_CONFIG.fontFamily}`;
+          ctx.font = `${NAME_CONFIG.fontWeight} ${d.fontSize}px ${NAME_CONFIG.fontFamily}`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           
           const textWidth = ctx.measureText(fullName).width;
-          const boxWidth = textWidth + paddingX * 2;
-          const boxHeight = fontSize + paddingY * 2;
+          const boxWidth = textWidth + d.paddingX * 2;
+          const boxHeight = d.fontSize + d.paddingY * 2;
           
-          const boxX = textX - boxWidth / 2;
-          const boxY = textY - boxHeight / 2;
+          const boxX = d.left - boxWidth / 2;
+          const boxY = d.top - boxHeight / 2;
           
           // Draw White Background Box
-          drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, radius);
+          drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, d.borderRadius);
           ctx.fillStyle = NAME_CONFIG.bgColor;
           ctx.fill();
           
           // Draw Text
           ctx.fillStyle = NAME_CONFIG.fontColor;
-          ctx.fillText(fullName, textX, textY);
+          ctx.fillText(fullName, d.left, d.top);
         }
 
         const dataURL = canvas.toDataURL('image/png');
